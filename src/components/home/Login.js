@@ -25,7 +25,7 @@ function Login() {
             const user = await axios.post(`http://localhost:5000/loginUser`, loginData);
             console.log("shyam")
             console.log(user)
-
+            localStorage.setItem('user', JSON.stringify(user.data))
             navigate('/dashboard')
             
         }
