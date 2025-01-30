@@ -7,8 +7,8 @@ function Register() {
     const [registerData, setRegisterData] = useState({
         email: '',
         username: '',
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         password: ''
     });
 
@@ -68,11 +68,11 @@ function Register() {
                 </div>
                 <div className='form-group row'>
                     <label className='col-2'>First Name:</label>
-                    <input type="text" className="col form-control" name="firstName" value={registerData.firstName} onChange={handleRegisterChange} required />
+                    <input type="text" className="col form-control" name="firstname" value={registerData.firstname} onChange={handleRegisterChange} required />
                 </div>
                 <div className='form-group row my-3'>
                     <label className='col-2'>Last Name:</label>
-                    <input type="text" className="col form-control" name="lastName" value={registerData.lastName} onChange={handleRegisterChange} required />
+                    <input type="text" className="col form-control" name="lastname" value={registerData.lastname} onChange={handleRegisterChange} required />
                 </div>
                 <div className='form-group row'>
                     <label className='col-2'>Password:</label>

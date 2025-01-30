@@ -1,0 +1,10 @@
+.topic-card{
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.topic-card *{
+    width: fit-content;
+}
