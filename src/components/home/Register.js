@@ -31,14 +31,13 @@ function Register() {
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
         if (registerData.password === con_password) {
-            const user = await axios.post(`http://localhost:5000/getUser`, registerData);
-            console.log("shyamasda")
-            console.log(user)
-            if (user.data != '') {
+
+            const user = await axios.post(`http://localhost:5000/createUser`, registerData);
+            
+            if (user.data == "User Exists Already") {
                 alert("User already exists");
             }
             else {
-                const sendDataReq = await axios.post(`http://localhost:5000/createUser`, registerData);
                 setRegisterSuccess(true)
                 setTimeout(() => {
                     setRegisterSuccess(false)
