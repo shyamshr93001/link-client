@@ -10,7 +10,7 @@ const Home = () => {
       <Header/>
       <div className='row'>
           <div className='col-6'>
-            <h1>Cards Placeholder</h1>
+            <h1 className='mt-2'>Topic Placeholder</h1>
           </div>
           <div className='col-6'>
             <Login/>

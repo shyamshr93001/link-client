@@ -42,7 +42,7 @@ function Register() {
                 setRegisterSuccess(true)
                 setTimeout(() => {
                     setRegisterSuccess(false)
-                }, 1000);
+                }, 2000);
             }
         }
         else {

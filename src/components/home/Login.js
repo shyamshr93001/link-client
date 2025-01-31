@@ -11,6 +11,9 @@ function Login() {
         password: ''
     })
 
+    const [loginFail, setLoginFail] = useState(false)
+    const [loginFailMessage, setLoginFailMessage] = useState('')
+
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
         setLoginData({
@@ -27,11 +30,12 @@ function Login() {
             console.log(user)
             localStorage.setItem('user', JSON.stringify(user.data))
             navigate('/dashboard')
-            
+
         }
         catch (err) {
-            if (err.response.status == 400) {
-                alert(err.response.data);
+            if (err.response.status === 400) {
+                setLoginFail(true)
+                setLoginFailMessage(err.response.data);
             }
         }
 
@@ -41,11 +45,12 @@ function Login() {
         <div>
             <div className='myCard'>
                 <h2>Login</h2>
+                
                 <form onSubmit={handleLoginSubmit}>
                     <div className='form-group row'>
                         <label className='col-4'>Email/Username:</label>
-                        <input type="text" className="col form-control" name="emailOrUsername" value={loginData.emailOrUsername} 
-                        onChange={handleLoginChange} required />
+                        <input type="text" className="col form-control" name="emailOrUsername" value={loginData.emailOrUsername}
+                            onChange={handleLoginChange} required />
                     </div>
 
                     <div className='form-group row mt-2'>
@@ -55,7 +60,10 @@ function Login() {
 
                     <button type="submit" className='btn btn-primary mt-2'>Login</button>
                 </form>
-
+                {loginFail && <div className="alert alert-danger mt-2" role="alert">
+                    {loginFailMessage}
+                </div>
+                }
             </div>
         </div>
     )
