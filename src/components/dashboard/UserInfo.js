@@ -29,7 +29,7 @@ const UserInfo = ({ userData }) => {
               {userData.email}
             </div>
             <div style={userInfoStyle}>
-              {new Date(userData.dateCreated).toUTCString()}
+              {new Date(userData.dateCreated).toLocaleString(undefined, {hour12: true, timeZone: 'Asia/Kolkata'})}
             </div>
           </div>
         </div>
