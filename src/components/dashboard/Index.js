@@ -60,8 +60,12 @@ const Index = () => {
     const user = JSON.parse(localStorage.getItem("user"))
     console.log(user)
     if (user === null) {
+      Swal.fire({
+        title: "Please Login",
+        icon: "error",
+      });
       navigate("/")
-      alert("login")
+
     }
     else
       setUserData({
