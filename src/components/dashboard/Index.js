@@ -4,7 +4,6 @@ import UserInfo from './UserInfo'
 import Topic from './Topic'
 import { Button, Modal, Form, Row } from 'react-bootstrap/';
 import axios from 'axios'
-
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
@@ -23,8 +22,7 @@ const Index = () => {
 
   const getTopicData = async () => {
     try {
-      const topicList = await axios.get(`http://localhost:5000/getTopics`);
-      console.log("i am running")
+      const topicList = await axios.get(`${process.env.REACT_APP_SERVER_URL}/getTopics`);
 
       setTopicData(topicList.data.filter(topic => topic.visibility == 'public'))
       setUserTopicData(topicList.data.filter(topic => topic.createdBy == userData.username))
@@ -75,6 +73,18 @@ const Index = () => {
     }
   }
 
+  const deleteTopic = async (name) => {
+    try {
+      console.log(name)
+      const topic = await axios.post(`${process.env.REACT_APP_SERVER_URL}/deleteTopic`, { name: name});
+      alert(topic.data)
+      getTopicData()
+    }
+    catch (err) {
+      alert(err.response.data)
+    }
+  }
+
   useEffect(() => {
     getTopicData()
   }, [userData])
@@ -92,13 +102,15 @@ const Index = () => {
         <Header title={userData.firstname + " " + userData.lastname} showTopicModal={handleShow} isLogin={true} />
         <div className='row mx-2'>
           <div className="col-4">
-            <UserInfo userData={userData}></UserInfo>
+            <UserInfo userData={userData} userTopicData={userTopicData}></UserInfo>
             <Topic topicData={userTopicData}
-              topicHeading="Your Topics"
+              topicHeading={userTopicData.name}
+              deleteTopic={deleteTopic}
               isUser={true}></Topic>
           </div>
           <div className="col-8">
-            <Topic topicData={topicData}
+            <Topic topicData={topicData} 
+              deleteTopic={deleteTopic}
             topicHeading="Public Topics"></Topic>
           </div>
         </div>

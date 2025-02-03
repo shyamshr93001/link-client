@@ -14,10 +14,13 @@ function Register() {
 
     const [registerSuccess, setRegisterSuccess] = useState(false);
     const [con_password, setConPassword] = useState('');
+    const [passNotMatch, setPassNotMatch] = useState(false);
 
     const handleConPassChange = (e) => {
         const { name, value } = e.target;
         setConPassword(value);
+        
+        setPassNotMatch(registerData.password !== value);
     }
 
     const handleRegisterChange = (e) => {
@@ -32,7 +35,7 @@ function Register() {
         e.preventDefault();
         if (registerData.password === con_password) {
 
-            const user = await axios.post(`http://localhost:5000/createUser`, registerData);
+            const user = await axios.post(`${process.env.REACT_APP_SERVER_URL}/createUser`, registerData);
             
             if (user.data == "User Exists Already") {
                 alert("User already exists");
@@ -81,7 +84,8 @@ function Register() {
                     <label className='col-2'>Confirm Password:</label>
                     <input type="password" className="col form-control" name="con_password" value={con_password} onChange={handleConPassChange} required />
                 </div>
-                <button type="submit" className='btn btn-primary'>Register</button>
+                {passNotMatch && <div className='text-danger'>Password do not match</div>}
+                <button type="submit" className='btn btn-primary mt-2 p-3'>Register</button>
             </form>
         </div>
     );

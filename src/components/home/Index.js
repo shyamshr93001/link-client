@@ -11,7 +11,7 @@ const Home = () => {
   const [topicData, setTopicData] = useState([])
   const getTopicData = async () => {
     try {
-      const topicList = await axios.get(`http://localhost:5000/getTopics`);
+      const topicList = await axios.get(`${process.env.REACT_APP_SERVER_URL}/getTopics`);
       console.log("i am running")
       
       setTopicData(topicList.data.filter(topic => topic.visibility == 'public').slice(0,4))

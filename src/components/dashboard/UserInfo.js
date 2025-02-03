@@ -1,7 +1,7 @@
 import React from 'react'
 import ProfileImg from "../../assets/images/profile.png"
 
-const UserInfo = ({ userData }) => {
+const UserInfo = ({ userData, userTopicData }) => {
 
   const userInfoStyle = {
     width: "fit-content",
@@ -18,7 +18,7 @@ const UserInfo = ({ userData }) => {
       <div style={userInfoParent}>
         <div className='row'>
           <div className="col-auto">
-            <img src={ProfileImg} height={100} />
+            <img src={ProfileImg} className='m-2' height={100} />
           </div>
           <div className='col'>
             <div style={userInfoStyle}>
@@ -30,6 +30,9 @@ const UserInfo = ({ userData }) => {
             </div>
             <div style={userInfoStyle}>
               {new Date(userData.dateCreated).toLocaleString(undefined, {hour12: true, timeZone: 'Asia/Kolkata'})}
+            </div>
+            <div style={userInfoStyle}>
+              {userTopicData.length} Topics
             </div>
           </div>
         </div>
