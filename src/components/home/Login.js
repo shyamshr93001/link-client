@@ -2,9 +2,14 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import './home.css'
+import ForgetPass from './ForgetPass';
 
 function Login() {
     const navigate = useNavigate();
+
+    const [showForgetModal, setForgetModal] = useState(false);
+    const handleForgetPassShow = () => setForgetModal(true);
+    const handleForgetPassClose = () => setForgetModal(false);
 
     const [loginData, setLoginData] = useState({
         emailOrUsername: '',
@@ -46,7 +51,7 @@ function Login() {
         <div>
             <div className='myCard'>
                 <h2>Login</h2>
-                
+
                 <form onSubmit={handleLoginSubmit}>
                     <div className='form-group row'>
                         <label className='col-4'>Email/Username:</label>
@@ -58,14 +63,20 @@ function Login() {
                         <label className='col-4'>Password:</label>
                         <input type="password" className="col form-control" name="password" value={loginData.password} onChange={handleLoginChange} required />
                     </div>
-
-                    <button type="submit" className='btn btn-primary mt-2'>Login</button>
+                    <div className='row mt-2 ' >
+                        <a href="#" className='col' onClick={handleForgetPassShow}>
+                            Forget Password
+                        </a>
+                        <button type="submit" className='btn btn-primary col-auto px-5'>Login</button>
+                    </div>
                 </form>
                 {loginFail && <div className="alert alert-danger mt-2" role="alert">
                     {loginFailMessage}
                 </div>
                 }
             </div>
+
+            <ForgetPass showForgetModal={showForgetModal} handleForgetPassClose={handleForgetPassClose} />
         </div>
     )
 }

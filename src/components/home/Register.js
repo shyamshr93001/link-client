@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './home.css'
+import Swal from 'sweetalert2';
 
 
 function Register() {
@@ -12,12 +13,14 @@ function Register() {
         password: ''
     });
 
-    const [registerSuccess, setRegisterSuccess] = useState(false);
     const [con_password, setConPassword] = useState('');
+    const [passNotMatch, setPassNotMatch] = useState(false);
 
     const handleConPassChange = (e) => {
         const { name, value } = e.target;
         setConPassword(value);
+
+        setPassNotMatch(registerData.password !== value);
     }
 
     const handleRegisterChange = (e) => {
@@ -32,30 +35,34 @@ function Register() {
         e.preventDefault();
         if (registerData.password === con_password) {
 
-            const user = await axios.post(`http://localhost:5000/createUser`, registerData);
-            
+            const user = await axios.post(`${process.env.REACT_APP_SERVER_URL}/createUser`, registerData);
+
             if (user.data == "User Exists Already") {
-                alert("User already exists");
+                Swal.fire({
+                    title: "User Exists Already",
+                    icon: "error",
+                });
             }
             else {
-                setRegisterSuccess(true)
-                setTimeout(() => {
-                    setRegisterSuccess(false)
-                }, 2000);
+                Swal.fire({
+                    title: "Registered Successfully",
+                    text: "User is registered successfully",
+                    icon: "success",
+                });
             }
         }
         else {
-            alert("Passwords do not match");
+            Swal.fire({
+                title: "Password do not match",
+                icon: "error",
+            });
         }
     };
 
     return (
         <div className='mt-4 myCard'>
             <h2>Register</h2>
-            {registerSuccess && <div className="alert alert-success" role="alert">
-                Register Successfully
-            </div>
-            }
+
             <form onSubmit={handleRegisterSubmit}>
                 <div className='form-group row'>
                     <label className='col-2'>Email:</label>
@@ -81,7 +88,8 @@ function Register() {
                     <label className='col-2'>Confirm Password:</label>
                     <input type="password" className="col form-control" name="con_password" value={con_password} onChange={handleConPassChange} required />
                 </div>
-                <button type="submit" className='btn btn-primary'>Register</button>
+                {passNotMatch && <div className='text-danger'>Password do not match</div>}
+                <button type="submit" className='btn btn-primary mt-2 p-3'>Register</button>
             </form>
         </div>
     );
