@@ -5,6 +5,8 @@ import Topic from './Topic'
 import { Button, Modal, Form, Row } from 'react-bootstrap/';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import EditTopic from './modals/EditTopic';
+import Swal from 'sweetalert2'
 
 const Index = () => {
 
@@ -19,6 +21,7 @@ const Index = () => {
 
   const [topicData, setTopicData] = useState([])
   const [userTopicData, setUserTopicData] = useState([])
+  const [topicObj, setTopicObj] = useState({})
 
   const getTopicData = async () => {
     try {
@@ -35,9 +38,19 @@ const Index = () => {
   }
 
   const [showModal, setShowModal] = useState(false)
+  const [showEditTopicModal, setEditTopicModal] = useState(false)
+
   const handleShow = () => setShowModal(true);
   const handleClose = () => {
     setShowModal(false)
+  };
+
+  const handleEditModalShow = (topic) => {
+    setTopicObj(topic)
+    setEditTopicModal(true)
+  };
+  const handleEditModalClose = () => {
+    setEditTopicModal(false)
   };
 
   const [name, setName] = useState('');
@@ -64,24 +77,64 @@ const Index = () => {
       createdBy: userData.username
     }
     try {
-      const topic = await axios.post(`http://localhost:5000/createTopic`, topicForm);
+      const topic = await axios.post(`${process.env.REACT_APP_SERVER_URL}/createTopic`, topicForm);
       getTopicData()
       handleClose()
+      Swal.fire({
+        title: "Topic is created successfully",
+        icon: "success",
+      });
     }
     catch (err) {
-      alert(err.response.data)
+      Swal.fire({
+        title: err.response.data,
+        icon: "error",
+      });
+    }
+  }
+
+  const updateTopic = async (newTopic) => {
+
+    try {
+      const topicForm = {
+        name: topicObj.name,
+        visibility: newTopic.visibility,
+        newName: newTopic.name
+      }
+
+      const topic = await axios.post(`${process.env.REACT_APP_SERVER_URL}/updateTopic`, topicForm);
+
+      getTopicData()
+      handleEditModalClose()
+      Swal.fire({
+        title: "Updated Topic Successfully",
+        icon: "success",
+      });
+    }
+    catch (err) {
+      Swal.fire({
+        title: err.response.data,
+        icon: "error",
+      });
     }
   }
 
   const deleteTopic = async (name) => {
     try {
       console.log(name)
-      const topic = await axios.post(`${process.env.REACT_APP_SERVER_URL}/deleteTopic`, { name: name});
-      alert(topic.data)
+      const topic = await axios.post(`${process.env.REACT_APP_SERVER_URL}/deleteTopic`, { name: name });
+
       getTopicData()
+      Swal.fire({
+        title: "Deleted Topic Successfully",
+        icon: "success",
+      });
     }
     catch (err) {
-      alert(err.response.data)
+      Swal.fire({
+        title: err.response.data,
+        icon: "error",
+      });
     }
   }
 
@@ -104,14 +157,15 @@ const Index = () => {
           <div className="col-4">
             <UserInfo userData={userData} userTopicData={userTopicData}></UserInfo>
             <Topic topicData={userTopicData}
-              topicHeading={userTopicData.name}
+              topicHeading="Your Topics"
+              handleEditModalShow={handleEditModalShow}
               deleteTopic={deleteTopic}
               isUser={true}></Topic>
           </div>
           <div className="col-8">
-            <Topic topicData={topicData} 
+            <Topic topicData={topicData}
               deleteTopic={deleteTopic}
-            topicHeading="Public Topics"></Topic>
+              topicHeading="Public Topics"></Topic>
           </div>
         </div>
       </div>
@@ -141,7 +195,7 @@ const Index = () => {
               <Form.Label column className='col-auto'>Visibility</Form.Label>
               <Form.Select className='col'
                 value={visibility}
-                onChange={(e) => { setVisibility(e.target.value); console.log(userData) }}
+                onChange={(e) => { setVisibility(e.target.value); }}
               >
                 <option>public</option>
                 <option>private</option>
@@ -158,6 +212,7 @@ const Index = () => {
           </Button>
         </Modal.Footer>
       </Modal >
+      <EditTopic showEditTopicModal={showEditTopicModal} handleEditModalClose={handleEditModalClose} topicObj={topicObj} updateTopic={updateTopic}></EditTopic>
     </>
   )
 }

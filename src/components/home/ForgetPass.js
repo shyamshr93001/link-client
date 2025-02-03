@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios'
+import Swal from 'sweetalert2'
+
 
 const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
 
     const [email, setEmail] = useState('');
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -12,17 +15,27 @@ const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
             const bodyData = {
                 email: email
             }
+            setSubmitDisabled(true);
             const forgotRes = await axios.post(`http://localhost:5000/forgetPassword`, bodyData);
 
             if (forgotRes.status === 200) {
-                alert("Password reset link sent to your email");
+                Swal.fire({
+                    title: "Password Reset Link Sent",
+                    text: "Password reset link sent to your email",
+                    icon: "success",
+                });
             }
             console.log('Email:', email);
             handleForgetPassClose();
         }
         catch (err) {
-            alert(err.response.data);
+            Swal.fire({
+                title: err.response.data,
+                icon: "error",
+            });
         }
+
+        setSubmitDisabled(false);
     };
 
     return (
@@ -43,7 +56,7 @@ const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
                                 required
                             />
                         </Form.Group>
-                        <Button variant="primary" className='mt-2' type="submit">
+                        <Button variant="primary" className='mt-2' disabled={submitDisabled} type="submit">
                             Submit
                         </Button>
                     </Form>

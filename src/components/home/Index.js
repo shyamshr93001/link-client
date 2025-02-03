@@ -6,15 +6,25 @@ import Header from '../common/Header'
 import Footer from '../common/Footer'
 import Topic from '../dashboard/Topic'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const [topicData, setTopicData] = useState([])
+  const navigate = useNavigate()
+  
   const getTopicData = async () => {
     try {
+      const user = JSON.parse(localStorage.getItem("user"))
+      console.log(user)
+      if (user !== null) {
+        navigate("/dashboard")
+        return
+      }
+
       const topicList = await axios.get(`${process.env.REACT_APP_SERVER_URL}/getTopics`);
       console.log("i am running")
-      
-      setTopicData(topicList.data.filter(topic => topic.visibility == 'public').slice(0,4))
+
+      setTopicData(topicList.data.filter(topic => topic.visibility == 'public').slice(0, 4))
     }
     catch (err) {
       if (err.response.status == 400) {
@@ -23,23 +33,23 @@ const Home = () => {
     }
   }
   useEffect(() => {
-      let ignore = false;
-  
-      if (!ignore) { getTopicData(); }
-      return () => { ignore = true; }
-    }, []);
+    let ignore = false;
+
+    if (!ignore) { getTopicData(); }
+    return () => { ignore = true; }
+  }, []);
   return (
     <div>
-      <Header/>
+      <Header />
       <div className='row mx-2'>
-          <div className='col-6'>
-            <Topic topicData={topicData} isUser={false} topicHeading="Top Topics"/>
-          </div>
-          <div className='col-6'>
-            <Login/>
-            <Register/>
-          </div>
+        <div className='col-6'>
+          <Topic topicData={topicData} isUser={false} topicHeading="Top Topics" />
         </div>
+        <div className='col-6'>
+          <Login />
+          <Register />
+        </div>
+      </div>
     </div>
   )
 }

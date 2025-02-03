@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import Header from '../common/Header';
+import Swal from 'sweetalert2';
 
 const ResetPass = () => {
     const [searchParams] = useSearchParams();
@@ -14,14 +14,25 @@ const ResetPass = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
-            alert('Passwords do not match');
+            Swal.fire({
+                title: "Passwords do not match",
+                icon: "error",
+            });
             return;
         }
         try {
             const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`, { newPassword });
             alert(response.data);
+            Swal.fire({
+                title: "Reset Password Successfully",
+                text: response.data,
+                icon: "success",
+            });
         } catch (error) {
-            alert(error.response.data);
+            Swal.fire({
+                title: error.response.data,
+                icon: "error",
+            });
         }
     };
 
