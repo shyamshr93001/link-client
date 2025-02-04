@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Header(props) {
   const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/")
@@ -13,6 +14,7 @@ function Header(props) {
       icon: "success",
     });
   }
+  
   return (
     <div>
       <nav className="navbar navbar-light bg-light justify-content-between px-2">

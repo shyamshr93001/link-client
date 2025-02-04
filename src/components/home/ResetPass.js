@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 const ResetPass = () => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
 
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const initialValues = {
+        newPassword: '',
+        confirmPassword: ''
+    };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (newPassword !== confirmPassword) {
+    const validationSchema = Yup.object({
+        newPassword: Yup.string().required('New Password is required'),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+            .required('Confirm Password is required')
+    });
+
+    const handleSubmit = async (values, { setSubmitting }) => {
+        if (values.newPassword !== values.confirmPassword) {
             Swal.fire({
                 title: "Passwords do not match",
                 icon: "error",
@@ -21,51 +30,71 @@ const ResetPass = () => {
             return;
         }
         try {
-            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`, { newPassword });
-            alert(response.data);
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`, { newPassword: values.newPassword });
             Swal.fire({
-                title: "Reset Password Successfully",
-                text: response.data,
-                icon: "success",
+                title: 'Password reset successful',
+                icon: 'success',
             });
         } catch (error) {
             Swal.fire({
-                title: error.response.data,
+                title: 'Error resetting password',
+                text: error.response?.data,
+                icon: 'error',
+            });
+        } finally {
+            setSubmitting(false);
+        }
+    };
+    
+
+    useEffect(() => {
+        if (!token) {
+            Swal.fire({
+                title: "Invalid Token or Not found",
+                text: "Token is invalid",
                 icon: "error",
             });
         }
-    };
+    }, []);
 
     return (
         <div className='container'>
             <a href='/'>Home</a>
             <div className="mt-2">
                 <h2>Reset Password</h2>
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formNewPassword">
-                        <Form.Label>New Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Enter new password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formConfirmPassword">
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Confirm new password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Button variant="primary" className='mt-2' type="submit">
-                        Reset Password
-                    </Button>
-                </Form>
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                >
+                    {({ isSubmitting }) => (
+                        <Form>
+                            <div className='form-group'>
+                                <label htmlFor="newPassword">New Password</label>
+                                <Field
+                                    type="password"
+                                    name="newPassword"
+                                    className="form-control"
+                                    placeholder="Enter new password"
+                                />
+                                <ErrorMessage name="newPassword" component="div" className="text-danger" />
+                            </div>
+                            <div className='form-group mt-2'>
+                                <label htmlFor="confirmPassword">Confirm Password</label>
+                                <Field
+                                    type="password"
+                                    name="confirmPassword"
+                                    className="form-control"
+                                    placeholder="Confirm new password"
+                                />
+                                <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+                            </div>
+                            <button type="submit" className='btn btn-primary mt-2' disabled={isSubmitting}>
+                                Reset Password
+                            </button>
+                        </Form>
+                    )}
+                </Formik>
             </div>
         </div>
     );

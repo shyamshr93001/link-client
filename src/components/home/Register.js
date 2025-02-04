@@ -2,60 +2,58 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './home.css'
 import Swal from 'sweetalert2';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
 
 
 function Register() {
-    const [registerData, setRegisterData] = useState({
+
+    const initialValues = {
         email: '',
         username: '',
         firstname: '',
         lastname: '',
-        password: ''
-    });
-
-    const [con_password, setConPassword] = useState('');
-    const [passNotMatch, setPassNotMatch] = useState(false);
-
-    const handleConPassChange = (e) => {
-        const { name, value } = e.target;
-        setConPassword(value);
-
-        setPassNotMatch(registerData.password !== value);
-    }
-
-    const handleRegisterChange = (e) => {
-        const { name, value } = e.target;
-        setRegisterData({
-            ...registerData,
-            [name]: value
-        });
+        password: '',
+        con_password: ''
     };
 
-    const handleRegisterSubmit = async (e) => {
-        e.preventDefault();
-        if (registerData.password === con_password) {
+    const validationSchema = Yup.object({
+        email: Yup.string().email('Invalid email format').required('Email is required'),
+        username: Yup.string().required('Username is required'),
+        firstname: Yup.string().required('First name is required'),
+        lastname: Yup.string().required('Last name is required'),
+        password: Yup.string().required('Password is required'),
+        con_password: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .required('Confirm Password is required')
+    });
 
-            const user = await axios.post(`${process.env.REACT_APP_SERVER_URL}/createUser`, registerData);
-
-            if (user.data == "User Exists Already") {
+    const handleRegisterSubmit = async (values, { setSubmitting }) => {
+        try {
+            const user = await axios.post(`${process.env.REACT_APP_SERVER_URL}/createUser`, values);
+            
+            if (user.data === "User Exists Already") {
                 Swal.fire({
                     title: "User Exists Already",
                     icon: "error",
                 });
-            }
-            else {
+            } else {
                 Swal.fire({
                     title: "Registered Successfully",
                     text: "User is registered successfully",
                     icon: "success",
                 });
             }
-        }
-        else {
+            
+        } catch (err) {
             Swal.fire({
-                title: "Password do not match",
+                title: "Registration Error",
+                text: err.response.data,
                 icon: "error",
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -63,34 +61,57 @@ function Register() {
         <div className='mt-4 myCard'>
             <h2>Register</h2>
 
-            <form onSubmit={handleRegisterSubmit}>
-                <div className='form-group row'>
-                    <label className='col-2'>Email:</label>
-                    <input type="email" className="col form-control" name="email" value={registerData.email} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row my-3'>
-                    <label className='col-2'>Username:</label>
-                    <input type="text" className="col form-control" name="username" value={registerData.username} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row'>
-                    <label className='col-2'>First Name:</label>
-                    <input type="text" className="col form-control" name="firstname" value={registerData.firstname} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row my-3'>
-                    <label className='col-2'>Last Name:</label>
-                    <input type="text" className="col form-control" name="lastname" value={registerData.lastname} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row'>
-                    <label className='col-2'>Password:</label>
-                    <input type="password" className="col form-control" name="password" value={registerData.password} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row my-3'>
-                    <label className='col-2'>Confirm Password:</label>
-                    <input type="password" className="col form-control" name="con_password" value={con_password} onChange={handleConPassChange} required />
-                </div>
-                {passNotMatch && <div className='text-danger'>Password do not match</div>}
-                <button type="submit" className='btn btn-primary mt-2 p-3'>Register</button>
-            </form>
+            <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleRegisterSubmit}
+            >
+                {({ isSubmitting }) => (
+                    <Form>
+                        <div className='form-group row'>
+                            <label className='col-4'>Email:</label>
+                            <Field type="email" className="col form-control" name="email" />
+                            <ErrorMessage name="email" component="div" className="text-danger" />
+                        </div>
+
+                        <div className='form-group row mt-2'>
+                            <label className='col-4'>Username:</label>
+                            <Field type="text" className="col form-control" name="username" />
+                            <ErrorMessage name="username" component="div" className="text-danger" />
+                        </div>
+
+                        <div className='form-group row mt-2'>
+                            <label className='col-4'>First Name:</label>
+                            <Field type="text" className="col form-control" name="firstname" />
+                            <ErrorMessage name="firstname" component="div" className="text-danger" />
+                        </div>
+
+                        <div className='form-group row mt-2'>
+                            <label className='col-4'>Last Name:</label>
+                            <Field type="text" className="col form-control" name="lastname" />
+                            <ErrorMessage name="lastname" component="div" className="text-danger" />
+                        </div>
+
+                        <div className='form-group row mt-2'>
+                            <label className='col-4'>Password:</label>
+                            <Field type="password" className="col form-control" name="password" />
+                            <ErrorMessage name="password" component="div" className="text-danger" />
+                        </div>
+
+                        <div className='form-group row mt-2'>
+                            <label className='col-4'>Confirm Password:</label>
+                            <Field type="password" className="col form-control" name="con_password" />
+                            <ErrorMessage name="con_password" component="div" className="text-danger" />
+                        </div>
+
+                        <div className='row mt-2'>
+                            <button type="submit" className='btn btn-primary col-auto px-5' disabled={isSubmitting}>
+                                Register
+                            </button>
+                        </div>
+                    </Form>
+                )}
+            </Formik>
         </div>
     );
 }
