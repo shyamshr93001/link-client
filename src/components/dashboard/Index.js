@@ -42,10 +42,10 @@ const Index = () => {
       const topicList = await axios.get(`${process.env.REACT_APP_SERVER_URL}/getTopics`);
 
       if (topicList == null || topicList.data == null)
-        throw "No topics found"
+        throw new Error("No topics found")
 
-      const publicTopics = topicList.data.filter(topic => topic.visibility == 'public')
-      const privateTopics = topicList.data.filter(topic => topic.createdBy == userData.username)
+      const publicTopics = topicList.data.filter(topic => topic.visibility === 'public')
+      const privateTopics = topicList.data.filter(topic => topic.createdBy === userData.username)
       
       setTopicData(publicTopics)
       setUserTopicData(privateTopics)
