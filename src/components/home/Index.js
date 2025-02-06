@@ -5,6 +5,8 @@ import Register from './Register'
 import Header from '../common/Header'
 
 const Home = () => {
+
+
   return (
     <div>
       <Header />

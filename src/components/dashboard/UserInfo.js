@@ -1,7 +1,10 @@
 import React from 'react'
 import ProfileImg from "../../assets/images/profile.png"
+import { useSelector } from 'react-redux';
 
-const UserInfo = ({ userData, userTopicData }) => {
+const UserInfo = ({ userTopicData }) => {
+
+  const userData = useSelector(state => state.user)
 
   const userInfoStyle = {
     width: "fit-content",
