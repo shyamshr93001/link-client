@@ -3,17 +3,18 @@ import Header from "../common/Header";
 import UserInfo from "./UserInfo";
 import Topic from "./Topic";
 import { Button, Modal } from "react-bootstrap";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { getData } from "../../utils/topicUtils";
+import { getData, createTopic } from "../../utils/topicUtils";
 import { getUser } from "../../utils/userUtils";
 import EditTopic from "./modals/EditTopic";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const topicReducer = useSelector((store) => store.topicReducer);
   const userReducer = useSelector((store) => store.user);
@@ -34,8 +35,20 @@ const Index = () => {
   const [publicTopicData, setPublicTopicData] = useState([]);
   const [userTopicData, setUserTopicData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [showEditTopicModal, setShowEditTopicModal] = useState(false)
-  const [topicObj, setTopicObj] = useState({})
+  const [showEditTopicModal, setShowEditTopicModal] = useState(false);
+  const [topicObj, setTopicObj] = useState({});
+
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const handleEditModalShow = (topic) => {
+    setTopicObj(topic);
+    setShowEditTopicModal(true);
+  };
+  const handleEditModalClose = () => setShowEditTopicModal(false);
+
+  const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
+    await createTopic(userData, values, setSubmitting, handleClose, dispatch);
+  };
 
   const getTopicData = async () => {
     try {
@@ -57,40 +70,8 @@ const Index = () => {
     }
   };
 
-  const handleShow = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
-  const handleEditModalShow = (topic) =>
-    { 
-      setTopicObj(topic)
-      setShowEditTopicModal(true)
-
-    };
-  const handleEditModalClose = () => setShowEditTopicModal(false);
-
-  const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
-    try {
-      values.createdBy = userData.username;
-      const topic = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/createTopic`,
-        values
-      );
-      dispatch(getData());
-      handleClose();
-      Swal.fire({
-        title: "Topic is created successfully",
-        icon: "success",
-      });
-    } catch (err) {
-      Swal.fire({
-        title: err.response?.data,
-        icon: "error",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
   useEffect(() => {
-    dispatch(getUser());
+    dispatch(getUser(navigate));
     dispatch(getData());
   }, [dispatch]);
 
@@ -191,7 +172,11 @@ const Index = () => {
           </Formik>
         </Modal.Body>
       </Modal>
-      <EditTopic showEditTopicModal={showEditTopicModal} handleEditModalClose={handleEditModalClose} topicObj={topicObj}></EditTopic>
+      <EditTopic
+        showEditTopicModal={showEditTopicModal}
+        handleEditModalClose={handleEditModalClose}
+        topicObj={topicObj}
+      ></EditTopic>
     </>
   );
 };

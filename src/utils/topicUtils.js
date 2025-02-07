@@ -1,49 +1,84 @@
-import axios from "axios";
 import Swal from "sweetalert2";
 import { getTopic } from "../redux/actions/topicActions";
+import { axiosInstance } from "./axiosUtils";
 
 export const getData = () => async (dispatch) => {
-  console.log("im arunning delete123")
-  const data = await axios(`${process.env.REACT_APP_SERVER_URL}/getTopics`);
-  dispatch(getTopic(data.data));
+  try {
+    const data = await axiosInstance.get("/getTopics");
+    dispatch(getTopic(data.data));
+  } catch (err) {
+    Swal.fire({
+      title: err.response?.data,
+      icon: "error",
+    });
+  }
 };
 
-// const updateTopic = async (newTopic) => {
-//     try {
-//       const topicForm = {
-//         name: topicObj.name,
-//         visibility: newTopic.visibility,
-//         newName: newTopic.name
-//       }
-
-//       const topic = await axios.post(`${process.env.REACT_APP_SERVER_URL}/updateTopic`, topicForm);
-
-//       getTopicData()
-//       handleEditModalClose()
-//       Swal.fire({
-//         title: "Updated Topic Successfully",
-//         icon: "success",
-//       });
-//     }
-//     catch (err) {
-//       Swal.fire({
-//         title: err.response.data,
-//         icon: "error",
-//       });
-//     }
-//  }
-
-export const testTopic = async (topicObj, getTopicData) => {
-  return "shyam";
+export const createTopic = async (
+  userData,
+  values,
+  setSubmitting,
+  handleClose,
+  dispatch
+) => {
+  try {
+    values.createdBy = userData.username;
+    const topic = await axiosInstance.post(
+      `${process.env.REACT_APP_SERVER_URL}/createTopic`,
+      values
+    );
+    dispatch(getData());
+    handleClose();
+    Swal.fire({
+      title: "Topic is created successfully",
+      icon: "success",
+    });
+  } catch (err) {
+    Swal.fire({
+      title: err.response?.data,
+      icon: "error",
+    });
+  } finally {
+    setSubmitting(false);
+  }
 };
 
-export const deleteTopic = async (name) => {
+export const updateTopic = async (
+  values,
+  setSubmitting,
+  handleEditModalClose,
+  dispatch
+) => {
+  try {
+    console.log("val", values);
+    const topic = await axiosInstance.post(
+      `${process.env.REACT_APP_SERVER_URL}/updateTopic`,
+      values
+    );
+    dispatch(getData());
+    handleEditModalClose();
+    Swal.fire({
+      title: "Topic is update successfully",
+      icon: "success",
+    });
+  } catch (err) {
+    Swal.fire({
+      title: err.response?.data,
+      icon: "error",
+    });
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+export const deleteTopic = async (name, dispatch) => {
   try {
     console.log(name);
-    const topic = await axios.post(
+    const topic = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/deleteTopic`,
       { name: name }
     );
+    dispatch(getData());
     Swal.fire({
       title: "Deleted Topic Successfully",
       icon: "success",

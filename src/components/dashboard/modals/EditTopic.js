@@ -4,8 +4,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { getData } from '../../../utils/topicUtils';
 import Swal from 'sweetalert2';
+import { updateTopic } from '../../../utils/topicUtils';
 
 const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
 
@@ -27,26 +27,7 @@ const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
     });
 
     const handleEditTopicSubmit = async (values, { setSubmitting }) => {
-        try {
-            console.log("val", values)
-            const topic = await axios.post(
-              `${process.env.REACT_APP_SERVER_URL}/updateTopic`,
-              values
-            );
-            dispatch(getData());
-            handleEditModalClose();
-            Swal.fire({
-              title: "Topic is update successfully",
-              icon: "success",
-            });
-          } catch (err) {
-            Swal.fire({
-              title: err.response?.data,
-              icon: "error",
-            });
-          } finally {
-            setSubmitting(false);
-          }
+       await updateTopic(values, setSubmitting, handleEditModalClose, dispatch)
     };
 
     return (
@@ -94,7 +75,7 @@ const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
                                 <Button variant="secondary" onClick={handleEditModalClose} className='col-auto'>
                                     Close
                                 </Button>
-                                <Button type="submit" variant="primary" disabled={isSubmitting} className='col-auto'>
+                                <Button type="submit" variant="primary" disabled={isSubmitting} className='ms-2 col-auto'>
                                     Save Changes
                                 </Button>
                             </div>

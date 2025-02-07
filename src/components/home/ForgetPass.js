@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import axios from 'axios'
-import Swal from 'sweetalert2'
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-
+import { forgetPass } from '../../utils/userUtils';
 
 const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
     const initialValues = {
@@ -14,21 +12,7 @@ const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
         email: Yup.string().email('Invalid email format').required('Email is required')
     });
     const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            await axios.post(`${process.env.REACT_APP_SERVER_URL}/forgotPassword`, values);
-            Swal.fire({
-                title: 'Password reset email sent',
-                icon: 'success',
-            });
-        } catch (err) {
-            Swal.fire({
-                title: 'Error sending email',
-                text: err.response.data,
-                icon: 'error',
-            });
-        } finally {
-            setSubmitting(false);
-        }
+       await forgetPass(values, setSubmitting)
     };
 
     return (

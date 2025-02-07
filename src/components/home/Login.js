@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import './home.css'
 import ForgetPass from './ForgetPass';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import Swal from 'sweetalert2';
+import { loginUser } from '../../utils/userUtils';
+import { useDispatch } from 'react-redux';
 
 
 function Login() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [showForgetModal, setForgetModal] = useState(false);
     const [loginFail, setLoginFail] = useState(false)
@@ -28,31 +29,7 @@ function Login() {
     const handleForgetPassShow = () => setForgetModal(true);
     const handleForgetPassClose = () => setForgetModal(false);
     const handleLoginSubmit = async (values, { setSubmitting }) => {
-
-        try {
-            const user = await axios.post(`${process.env.REACT_APP_SERVER_URL}/loginUser`, values);
-
-            localStorage.setItem('user', JSON.stringify(user.data.data))
-            localStorage.setItem('token', JSON.stringify(user.data.token))
-            navigate('/dashboard')
-
-        }
-        catch (err) {
-            if (err.response.status === 400) {
-                setLoginFail(true)
-                setLoginFailMessage(err.response.data);
-            }
-            else {
-                Swal.fire({
-                    title: "Login Error",
-                    text: err.response.data,
-                    icon: "error",
-                });
-            }
-        }
-        finally {
-            setSubmitting(false);
-        }
+        await loginUser(values, navigate, setLoginFail, setLoginFailMessage, setSubmitting, dispatch)
     }
 
     return (
