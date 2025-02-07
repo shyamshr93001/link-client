@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 const UserInfo = ({ userTopicData }) => {
 
-  const userData = useSelector(state => state.user)
+  const userData = useSelector(state => state.user.userData)
 
   const userInfoStyle = {
     width: "fit-content",

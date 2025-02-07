@@ -5,13 +5,15 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  if (action.type === GET_TOPIC) {
-    return {
-      ...state,
-      topicData: [...action.payload],
-    };
+  switch (action.type) {
+    case GET_TOPIC:
+      return {
+        ...state,
+        topicData: [...action.payload],
+      };
+    default:
+      return state;
   }
-  return state;
 };
 
 export default reducer;

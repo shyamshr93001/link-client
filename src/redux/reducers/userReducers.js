@@ -1,8 +1,14 @@
-const reducer = (state = {}, action) => {
+import { GET_USER } from "../constants/userConstants";
+const initialState = {
+  userData: {},
+};
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "GET_USER":
-      state = JSON.parse(localStorage.getItem("user"));
-      return state;
+    case GET_USER:
+      return {
+        ...state,
+        userData: action.payload,
+      };
     default:
       return state;
   }

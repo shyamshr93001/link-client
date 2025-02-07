@@ -1,10 +1,8 @@
 import { GET_USER } from "../constants/userConstants";
 
-export const user = (userdata) => {
-  return (dispatch) => {
-    dispatch({
-      type: GET_USER,
-      payload: userdata,
-    });
+export const getUserAction = (userdata) => {
+  return {
+    type: GET_USER,
+    payload: userdata,
   };
 };

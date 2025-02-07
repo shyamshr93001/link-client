@@ -4,40 +4,22 @@ import UserInfo from "./UserInfo";
 import Topic from "./Topic";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
-import * as userActions from "../../redux/actions/userActions";
-import * as topicActions from "../../redux/actions/topicActions";
 import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
-
-import { getData } from "../../redux/actions/topicActions";
+import { getData } from "../../utils/topicUtils";
+import { getUser } from "../../utils/userUtils";
+import EditTopic from "./modals/EditTopic";
 
 const Index = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getData());
-  }, [dispatch]);
+  const topicReducer = useSelector((store) => store.topicReducer);
+  const userReducer = useSelector((store) => store.user);
 
-  const store = useSelector((store) => store);
-  const { topicReducer } = store;
   const { topicData } = topicReducer;
-
-  console.log(topicData);
-
-  const { user } = bindActionCreators(userActions, dispatch);
-
-  const userData = useSelector((state) => state.user);
-
-  useEffect(() => {
-    user();
-  }, []);
-
-  const navigate = useNavigate();
+  const { userData } = userReducer;
 
   const initialValues = {
     name: "",
@@ -49,23 +31,22 @@ const Index = () => {
     visibility: Yup.string().required("Visibility is required"),
   });
 
-  const [topicData1, setTopicData] = useState([]);
+  const [publicTopicData, setPublicTopicData] = useState([]);
   const [userTopicData, setUserTopicData] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showEditTopicModal, setShowEditTopicModal] = useState(false)
+  const [topicObj, setTopicObj] = useState({})
 
   const getTopicData = async () => {
     try {
-      const topicList = [];
-      return;
-      console.log("shyam", topicList);
-      const publicTopics = topicList.data.filter(
+      const publicTopics = topicData.filter(
         (topic) => topic.visibility === "public"
       );
-      const privateTopics = topicList.data.filter(
+      const privateTopics = topicData.filter(
         (topic) => topic.createdBy === userData.username
       );
 
-      setTopicData(publicTopics);
+      setPublicTopicData(publicTopics);
       setUserTopicData(privateTopics);
     } catch (err) {
       Swal.fire({
@@ -78,6 +59,13 @@ const Index = () => {
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+  const handleEditModalShow = (topic) =>
+    { 
+      setTopicObj(topic)
+      setShowEditTopicModal(true)
+
+    };
+  const handleEditModalClose = () => setShowEditTopicModal(false);
 
   const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
     try {
@@ -86,7 +74,7 @@ const Index = () => {
         `${process.env.REACT_APP_SERVER_URL}/createTopic`,
         values
       );
-      getTopicData();
+      dispatch(getData());
       handleClose();
       Swal.fire({
         title: "Topic is created successfully",
@@ -101,6 +89,15 @@ const Index = () => {
       setSubmitting(false);
     }
   };
+  useEffect(() => {
+    dispatch(getUser());
+    dispatch(getData());
+  }, [dispatch]);
+
+  useEffect(() => {
+    getTopicData();
+    console.log("new topic", topicData);
+  }, [topicData]);
 
   return (
     <>
@@ -116,13 +113,16 @@ const Index = () => {
             <Topic
               topicData={userTopicData}
               topicHeading="Your Topics"
-              // handleEditModalShow={handleEditModalShow}
+              handleEditModalShow={handleEditModalShow}
               getTopicData={getTopicData}
               isUser={true}
             ></Topic>
           </div>
           <div className="col-8">
-            <Topic topicData={topicData} topicHeading="Public Topics"></Topic>
+            <Topic
+              topicData={publicTopicData}
+              topicHeading="Public Topics"
+            ></Topic>
           </div>
         </div>
       </div>
@@ -191,7 +191,7 @@ const Index = () => {
           </Formik>
         </Modal.Body>
       </Modal>
-      {/* <EditTopic showEditTopicModal={showEditTopicModal} handleEditModalClose={handleEditModalClose} topicObj={topicObj}></EditTopic> */}
+      <EditTopic showEditTopicModal={showEditTopicModal} handleEditModalClose={handleEditModalClose} topicObj={topicObj}></EditTopic>
     </>
   );
 };
