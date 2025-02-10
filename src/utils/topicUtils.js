@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { getTopic } from "../redux/actions/topicActions";
+import { addTopic, getTopic } from "../redux/actions/topicActions";
 import { axiosInstance } from "./axiosUtils";
 
 export const getData = () => async (dispatch) => {
@@ -14,34 +14,29 @@ export const getData = () => async (dispatch) => {
   }
 };
 
-export const createTopic = async (
-  userData,
-  values,
-  setSubmitting,
-  handleClose,
-  dispatch
-) => {
-  try {
-    values.createdBy = userData.username;
-    const topic = await axiosInstance.post(
-      `${process.env.REACT_APP_SERVER_URL}/createTopic`,
-      values
-    );
-    dispatch(getData());
-    handleClose();
-    Swal.fire({
-      title: "Topic is created successfully",
-      icon: "success",
-    });
-  } catch (err) {
-    Swal.fire({
-      title: err.response?.data,
-      icon: "error",
-    });
-  } finally {
-    setSubmitting(false);
-  }
-};
+export const createTopic =
+  (userData, values, setSubmitting, handleClose) => async (dispatch) => {
+    try {
+      values.createdBy = userData.username;
+      const newTopic = await axiosInstance.post(
+        `${process.env.REACT_APP_SERVER_URL}/createTopic`,
+        values
+      );
+      dispatch(addTopic(newTopic.data));
+      handleClose();
+      Swal.fire({
+        title: "Topic is created successfully",
+        icon: "success",
+      });
+    } catch (err) {
+      Swal.fire({
+        title: err.response?.data,
+        icon: "error",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
 export const updateTopic = async (
   values,

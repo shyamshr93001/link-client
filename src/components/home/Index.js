@@ -2,9 +2,6 @@ import React, { useEffect } from "react";
 import Login from "./Login";
 import Register from "./Register";
 import Header from "../common/Header";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../utils/userUtils";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { resetPass } from "../../utils/userUtils";
+import { resetPassSchema } from "../../utils/schemas/userSchemas";
 
 const ResetPass = () => {
   const [searchParams] = useSearchParams();
@@ -13,13 +13,6 @@ const ResetPass = () => {
     newPassword: "",
     confirmPassword: "",
   };
-
-  const validationSchema = Yup.object({
-    newPassword: Yup.string().required("New Password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-      .required("Confirm Password is required"),
-  });
 
   const handleSubmit = async (values, { setSubmitting }) => {
     await resetPass(values, setSubmitting, token);
@@ -42,7 +35,7 @@ const ResetPass = () => {
         <h2>Reset Password</h2>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={resetPassSchema}
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (

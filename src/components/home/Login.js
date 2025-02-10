@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './home.css'
 import ForgetPass from './ForgetPass';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import { loginUser } from '../../utils/userUtils';
 import { useDispatch } from 'react-redux';
-
+import { loginSchema } from '../../utils/schemas/userSchemas';
 
 function Login() {
     const navigate = useNavigate();
@@ -21,11 +20,6 @@ function Login() {
         password: ''
     };
 
-    const validationSchema = Yup.object({
-        emailOrUsername: Yup.string().required('Email or Username is required'),
-        password: Yup.string().required('Password is required')
-    });
-
     const handleForgetPassShow = () => setForgetModal(true);
     const handleForgetPassClose = () => setForgetModal(false);
     const handleLoginSubmit = async (values, { setSubmitting }) => {
@@ -39,7 +33,7 @@ function Login() {
 
                 <Formik
                     initialValues={initialValues}
-                    validationSchema={validationSchema}
+                    validationSchema={loginSchema}
                     onSubmit={handleLoginSubmit}
                 >
                     {({ isSubmitting }) => (

@@ -11,6 +11,8 @@ import { getData, createTopic } from "../../utils/topicUtils";
 import { getUser } from "../../utils/userUtils";
 import EditTopic from "./modals/EditTopic";
 import { useNavigate } from "react-router-dom";
+import { createTopicSchema } from "../../utils/schemas/topicSchemas";
+import { getSubsData } from "../../utils/subscribeUtils";
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -18,19 +20,17 @@ const Index = () => {
 
   const topicReducer = useSelector((store) => store.topicReducer);
   const userReducer = useSelector((store) => store.user);
+  const subscriptionReducer = useSelector((store) => store.subscriptionReducer);
 
   const { topicData } = topicReducer;
   const { userData } = userReducer;
+  const { subsData } = subscriptionReducer;
 
   const initialValues = {
     name: "",
     visibility: "public",
   };
 
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Topic name is required"),
-    visibility: Yup.string().required("Visibility is required"),
-  });
 
   const [publicTopicData, setPublicTopicData] = useState([]);
   const [userTopicData, setUserTopicData] = useState([]);
@@ -47,7 +47,8 @@ const Index = () => {
   const handleEditModalClose = () => setShowEditTopicModal(false);
 
   const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
-    await createTopic(userData, values, setSubmitting, handleClose, dispatch);
+    console.log("cluck me")
+    await dispatch(createTopic(userData, values, setSubmitting, handleClose));
   };
 
   const getTopicData = async () => {
@@ -73,12 +74,17 @@ const Index = () => {
   useEffect(() => {
     dispatch(getUser(navigate));
     dispatch(getData());
+    dispatch(getSubsData())
   }, [dispatch]);
 
   useEffect(() => {
     getTopicData();
     console.log("new topic", topicData);
   }, [topicData]);
+
+  useEffect(() => {
+    console.log("new subs", subsData);
+  }, [subsData]);
 
   return (
     <>
@@ -115,7 +121,7 @@ const Index = () => {
         <Modal.Body>
           <Formik
             initialValues={initialValues}
-            validationSchema={validationSchema}
+            validationSchema={createTopicSchema}
             onSubmit={handleCreateTopicSubmit}
           >
             {({ isSubmitting }) => (

@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { deleteTopic } from '../../utils/topicUtils';
 import { useDispatch } from 'react-redux';
+import Subscribe from './Subscribe';
 
 
 const Topic = ({ topicHeading, topicData, isUser = false, handleEditModalShow }) => {
@@ -41,6 +42,7 @@ const Topic = ({ topicHeading, topicData, isUser = false, handleEditModalShow })
                                 </button>}
 
                             </div>
+                            {!isUser && <Subscribe topicObj={topic}/> }
                         </div>
                     ))}
                 </div>

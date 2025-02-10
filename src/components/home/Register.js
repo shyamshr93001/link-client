@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./home.css";
-import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { registerUser } from "../../utils/userUtils";
+import { registerSchema } from "../../utils/schemas/userSchemas";
 
 function Register() {
   const initialValues = {
@@ -16,19 +14,6 @@ function Register() {
     con_password: "",
   };
 
-  const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    username: Yup.string().required("Username is required"),
-    firstname: Yup.string().required("First name is required"),
-    lastname: Yup.string().required("Last name is required"),
-    password: Yup.string().required("Password is required"),
-    con_password: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Confirm Password is required"),
-  });
-
   const handleRegisterSubmit = async (values, { setSubmitting }) => {
     await registerUser(values, setSubmitting);
   };
@@ -39,7 +24,7 @@ function Register() {
 
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={registerSchema}
         onSubmit={handleRegisterSubmit}
       >
         {({ isSubmitting }) => (

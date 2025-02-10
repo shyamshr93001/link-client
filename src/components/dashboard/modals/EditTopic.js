@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import Swal from 'sweetalert2';
 import { updateTopic } from '../../../utils/topicUtils';
+import { editTopicSchema } from '../../../utils/schemas/topicSchemas';
 
 const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
 
@@ -21,11 +19,6 @@ const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
         });
     }, [topicObj])
 
-    const validationSchema = Yup.object({
-        newName: Yup.string().required('New name is required'),
-        visibility: Yup.string().required('Visibility is required')
-    });
-
     const handleEditTopicSubmit = async (values, { setSubmitting }) => {
        await updateTopic(values, setSubmitting, handleEditModalClose, dispatch)
     };
@@ -38,7 +31,7 @@ const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
             <Modal.Body>
             <Formik
                     initialValues={initialValues}
-                    validationSchema={validationSchema}
+                    validationSchema={editTopicSchema}
                     onSubmit={handleEditTopicSubmit}
                     enableReinitialize
                 >

@@ -1,6 +1,7 @@
 import { getUserAction } from "../redux/actions/userActions";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { axiosInstance } from "./axiosUtils";
 
 export const getUser =
   (navigate = null) =>
@@ -20,7 +21,7 @@ export const getUser =
 
 export const forgetPass = async (values, setSubmitting) => {
   try {
-    await axios.post(
+    await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/forgotPassword`,
       values
     );
@@ -48,7 +49,7 @@ export const loginUser = async (
   dispatch
 ) => {
   try {
-    const user = await axios.post(
+    const user = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/loginUser`,
       values
     );
@@ -74,7 +75,7 @@ export const loginUser = async (
 
 export const registerUser = async (values, setSubmitting) => {
   try {
-    const user = await axios.post(
+    const user = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/createUser`,
       values
     );
@@ -111,7 +112,7 @@ export const resetPass = async (values, setSubmitting, token) => {
     return;
   }
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`,
       { newPassword: values.newPassword }
     );
