@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Form, Row } from 'react-bootstrap/';
+import { Button, Modal } from 'react-bootstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useDispatch } from 'react-redux';
+import { updateTopic } from '../../../utils/topicUtils';
+import { editTopicSchema } from '../../../utils/schemas/topicSchemas';
 
-const EditTopic = ({ showEditTopicModal, handleEditModalClose, updateTopic, topicObj }) => {
+const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
 
-    const [name, setName] = useState('');
-    const [visibility, setVisibility] = useState(topicObj.visibility);
+    const dispatch = useDispatch();
+
+    const [initialValues, setInitialValues] = useState({});
 
     useEffect(() => {
-        setVisibility(topicObj.visibility)
+        setInitialValues({
+            name: topicObj.name,
+            newName: topicObj.name,
+            visibility: topicObj.visibility
+        });
     }, [topicObj])
+
+    const handleEditTopicSubmit = async (values, { setSubmitting }) => {
+       await updateTopic(values, setSubmitting, handleEditModalClose, dispatch)
+    };
 
     return (
         <Modal show={showEditTopicModal} onHide={handleEditModalClose}>
@@ -16,54 +29,53 @@ const EditTopic = ({ showEditTopicModal, handleEditModalClose, updateTopic, topi
                 <Modal.Title>Edit Topic</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
-                    <Form.Group as={Row} controlId="exampleForm.ControlInput1">
-                        <Form.Label column className='col-auto'>Topic Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            style={{ width: 'fit-content' }}
-                            className='col'
-                            value={topicObj.name}
-                            disabled={true}
-                            placeholder=""
-                            autoFocus
-                        />
-                    </Form.Group>
-                    <Form.Group as={Row} className="my-3" controlId="exampleForm.ControlInput1">
-                        <Form.Label column className='col-auto'>New Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            style={{ width: 'fit-content' }}
-                            className='col'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Update Topic name"
-                            autoFocus
-                        />
-                    </Form.Group>
-                    <Form.Group
-                        as={Row}
-                        className="mb-3"
-                        controlId="exampleForm.ControlTextarea1">
-                        <Form.Label column className='col-auto'>Visibility</Form.Label>
-                        <Form.Select className='col'
-                            value={visibility}
-                            onChange={(e) => { setVisibility(e.target.value); }}
-                        >
-                            <option>public</option>
-                            <option>private</option>
-                        </Form.Select>
-                    </Form.Group>
-                </Form>
+            <Formik
+                    initialValues={initialValues}
+                    validationSchema={editTopicSchema}
+                    onSubmit={handleEditTopicSubmit}
+                    enableReinitialize
+                >
+                    {({ isSubmitting }) => (
+                        <Form>
+                            <div className='form-group row'>
+                                <label className='col-auto'>Topic Name</label>
+                                <Field
+                                    type="text"
+                                    className="col form-control"
+                                    name="name"
+                                    disabled={true}
+                                />
+                            </div>
+                            <div className='form-group row mt-2'>
+                                <label className='col-auto'>New Name</label>
+                                <Field
+                                    type="text"
+                                    className="col form-control"
+                                    name="newName"
+                                    placeholder="Enter new topic name"
+                                />
+                                <ErrorMessage name="newName" component="div" className="text-danger" />
+                            </div>
+                            <div className='form-group row mt-2'>
+                                <label className='col-auto'>Visibility</label>
+                                <Field as="select" className="col form-control" name="visibility">
+                                    <option value="public">Public</option>
+                                    <option value="private">Private</option>
+                                </Field>
+                                <ErrorMessage name="visibility" component="div" className="text-danger" />
+                            </div>
+                            <div className='row mt-2'>
+                                <Button variant="secondary" onClick={handleEditModalClose} className='col-auto'>
+                                    Close
+                                </Button>
+                                <Button type="submit" variant="primary" disabled={isSubmitting} className='ms-2 col-auto'>
+                                    Save Changes
+                                </Button>
+                            </div>
+                        </Form>
+                    )}
+                </Formik>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleEditModalClose}>
-                    Close
-                </Button>
-                <Button variant="primary" onClick={(e) => updateTopic({name, visibility})}>
-                    Update
-                </Button>
-            </Modal.Footer>
         </Modal >
     )
 }

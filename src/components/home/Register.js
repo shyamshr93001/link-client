@@ -1,98 +1,120 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import './home.css'
-import Swal from 'sweetalert2';
-
+import React, { useState } from "react";
+import "./home.css";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { registerUser } from "../../utils/userUtils";
+import { registerSchema } from "../../utils/schemas/userSchemas";
 
 function Register() {
-    const [registerData, setRegisterData] = useState({
-        email: '',
-        username: '',
-        firstname: '',
-        lastname: '',
-        password: ''
-    });
+  const initialValues = {
+    email: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+    password: "",
+    con_password: "",
+  };
 
-    const [con_password, setConPassword] = useState('');
-    const [passNotMatch, setPassNotMatch] = useState(false);
+  const handleRegisterSubmit = async (values, { setSubmitting }) => {
+    await registerUser(values, setSubmitting);
+  };
 
-    const handleConPassChange = (e) => {
-        const { name, value } = e.target;
-        setConPassword(value);
+  return (
+    <div className="mt-4 myCard">
+      <h2>Register</h2>
 
-        setPassNotMatch(registerData.password !== value);
-    }
+      <Formik
+        initialValues={initialValues}
+        validationSchema={registerSchema}
+        onSubmit={handleRegisterSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <div className="form-group row">
+              <label className="col-4">Email:</label>
+              <Field type="email" className="col form-control" name="email" />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-danger"
+              />
+            </div>
 
-    const handleRegisterChange = (e) => {
-        const { name, value } = e.target;
-        setRegisterData({
-            ...registerData,
-            [name]: value
-        });
-    };
+            <div className="form-group row mt-2">
+              <label className="col-4">Username:</label>
+              <Field type="text" className="col form-control" name="username" />
+              <ErrorMessage
+                name="username"
+                component="div"
+                className="text-danger"
+              />
+            </div>
 
-    const handleRegisterSubmit = async (e) => {
-        e.preventDefault();
-        if (registerData.password === con_password) {
+            <div className="form-group row mt-2">
+              <label className="col-4">First Name:</label>
+              <Field
+                type="text"
+                className="col form-control"
+                name="firstname"
+              />
+              <ErrorMessage
+                name="firstname"
+                component="div"
+                className="text-danger"
+              />
+            </div>
 
-            const user = await axios.post(`${process.env.REACT_APP_SERVER_URL}/createUser`, registerData);
+            <div className="form-group row mt-2">
+              <label className="col-4">Last Name:</label>
+              <Field type="text" className="col form-control" name="lastname" />
+              <ErrorMessage
+                name="lastname"
+                component="div"
+                className="text-danger"
+              />
+            </div>
 
-            if (user.data == "User Exists Already") {
-                Swal.fire({
-                    title: "User Exists Already",
-                    icon: "error",
-                });
-            }
-            else {
-                Swal.fire({
-                    title: "Registered Successfully",
-                    text: "User is registered successfully",
-                    icon: "success",
-                });
-            }
-        }
-        else {
-            Swal.fire({
-                title: "Password do not match",
-                icon: "error",
-            });
-        }
-    };
+            <div className="form-group row mt-2">
+              <label className="col-4">Password:</label>
+              <Field
+                type="password"
+                className="col form-control"
+                name="password"
+              />
+              <ErrorMessage
+                name="password"
+                component="div"
+                className="text-danger"
+              />
+            </div>
 
-    return (
-        <div className='mt-4 myCard'>
-            <h2>Register</h2>
+            <div className="form-group row mt-2">
+              <label className="col-4">Confirm Password:</label>
+              <Field
+                type="password"
+                className="col form-control"
+                name="con_password"
+              />
+              <ErrorMessage
+                name="con_password"
+                component="div"
+                className="text-danger"
+              />
+            </div>
 
-            <form onSubmit={handleRegisterSubmit}>
-                <div className='form-group row'>
-                    <label className='col-2'>Email:</label>
-                    <input type="email" className="col form-control" name="email" value={registerData.email} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row my-3'>
-                    <label className='col-2'>Username:</label>
-                    <input type="text" className="col form-control" name="username" value={registerData.username} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row'>
-                    <label className='col-2'>First Name:</label>
-                    <input type="text" className="col form-control" name="firstname" value={registerData.firstname} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row my-3'>
-                    <label className='col-2'>Last Name:</label>
-                    <input type="text" className="col form-control" name="lastname" value={registerData.lastname} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row'>
-                    <label className='col-2'>Password:</label>
-                    <input type="password" className="col form-control" name="password" value={registerData.password} onChange={handleRegisterChange} required />
-                </div>
-                <div className='form-group row my-3'>
-                    <label className='col-2'>Confirm Password:</label>
-                    <input type="password" className="col form-control" name="con_password" value={con_password} onChange={handleConPassChange} required />
-                </div>
-                {passNotMatch && <div className='text-danger'>Password do not match</div>}
-                <button type="submit" className='btn btn-primary mt-2 p-3'>Register</button>
-            </form>
-        </div>
-    );
+            <div className="row mt-2">
+              <button
+                type="submit"
+                className="btn btn-primary col-auto px-5"
+                disabled={isSubmitting}
+              >
+                Register
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
 }
 
 export default Register;
