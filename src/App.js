@@ -4,9 +4,6 @@ import Dashboard from './components/dashboard/Index';
 import ResetPass from './components/home/ResetPass';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
-
-
-
 function App() {
   return (
     <BrowserRouter>

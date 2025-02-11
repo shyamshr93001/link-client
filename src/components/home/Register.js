@@ -8,8 +8,8 @@ function Register() {
   const initialValues = {
     email: "",
     username: "",
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
     password: "",
     con_password: "",
   };
@@ -54,10 +54,10 @@ function Register() {
               <Field
                 type="text"
                 className="col form-control"
-                name="firstname"
+                name="firstName"
               />
               <ErrorMessage
-                name="firstname"
+                name="firstName"
                 component="div"
                 className="text-danger"
               />
@@ -65,9 +65,9 @@ function Register() {
 
             <div className="form-group row mt-2">
               <label className="col-4">Last Name:</label>
-              <Field type="text" className="col form-control" name="lastname" />
+              <Field type="text" className="col form-control" name="lastName" />
               <ErrorMessage
-                name="lastname"
+                name="lastName"
                 component="div"
                 className="text-danger"
               />

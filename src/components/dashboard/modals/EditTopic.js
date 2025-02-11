@@ -19,8 +19,9 @@ const EditTopic = ({ showEditTopicModal, handleEditModalClose, topicObj }) => {
         });
     }, [topicObj])
 
+    //change (ui shouldn't be passed)
     const handleEditTopicSubmit = async (values, { setSubmitting }) => {
-       await updateTopic(values, setSubmitting, handleEditModalClose, dispatch)
+       const response = await updateTopic(values, setSubmitting, handleEditModalClose, dispatch)
     };
 
     return (

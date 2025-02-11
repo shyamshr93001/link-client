@@ -12,6 +12,7 @@ const Subscribe = ({ topicObj }) => {
 
   const [seriousness, setSeriousness] = useState("Casual");
   const [isSubscribed, setIsSubscribed] = useState(false);
+
   const createFormData = () => ({
     topic: topicObj.name,
     user: userData.username,
@@ -20,7 +21,6 @@ const Subscribe = ({ topicObj }) => {
 
   const handleSubscribe = async () => { 
     const formData = createFormData();
-    console.log("form", formData)
     await addToSubs(formData, dispatch);
   };
 

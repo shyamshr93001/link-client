@@ -18,10 +18,11 @@ function Header(props) {
   return (
     <div>
       <nav className="navbar navbar-light bg-light justify-content-between px-2">
-        <a className="navbar-brand">Link Sharing App</a>
+        <a href='/' className="navbar-brand">Link Sharing App</a>
         <form className="form-inline">
           <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
         </form>
+        {/* use bootstrap icon */}
         {props.isLogin &&
           <div className='d-flex'>
             <button className='btn btn-primary' onClick={props.showTopicModal}>
@@ -49,10 +50,10 @@ function Header(props) {
                 {props.title}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item href="#/action-2">Profile</Dropdown.Item>
+                {/* <Dropdown.Item href="#/action-2">Profile</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Users</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Topics</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Posts</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Posts</Dropdown.Item> */}
                 <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

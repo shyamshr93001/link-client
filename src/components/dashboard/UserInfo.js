@@ -3,7 +3,11 @@ import ProfileImg from "../../assets/images/profile.png";
 import { useSelector } from "react-redux";
 
 const UserInfo = ({ userTopicData }) => {
+  //change inline function. move to top
   const userReducer = useSelector((state) => state.user);
+  const subsReducer = useSelector((state) => state.subscriptionReducer)
+
+  const {subsData} = subsReducer;
 
   const { userData } = userReducer;
 
@@ -16,19 +20,22 @@ const UserInfo = ({ userTopicData }) => {
     borderRadius: "10px",
   };
 
+  const subCount = subsData.filter(sub=> sub.user === userData.username).length
+
   return (
     <div className="my-2 p-2">
       <h2>User Info</h2>
       <div style={userInfoParent}>
         <div className="row">
           <div className="col-auto">
-            <img src={ProfileImg} className="m-2" height={100} />
+            <img src={ProfileImg} alt="profile" className="m-2" height={100} />
           </div>
           <div className="col">
             <div style={userInfoStyle}>
-              {userData?.firstname +
+
+              {userData?.firstName +
                 " " +
-                userData?.lastname +
+                userData?.lastName +
                 " (" +
                 userData?.username +
                 ")"}
@@ -41,7 +48,9 @@ const UserInfo = ({ userTopicData }) => {
                 timeZone: "Asia/Kolkata",
               })}
             </div>
-            <div style={userInfoStyle}>{userTopicData.length} Topics</div>
+            <div style={userInfoStyle}>Topics : {userTopicData.length}</div>
+            <div style={userInfoStyle}>Subscriptions: {subCount}</div>
+
           </div>
         </div>
       </div>
