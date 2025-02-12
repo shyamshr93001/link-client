@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { resetPass } from "../../utils/userUtils";
-import { resetPassSchema } from "../../utils/schemas/userSchemas";
+import { resetPass } from "../utils/userUtils";
+import { resetPassSchema } from "../utils/schemas/userSchemas";
+import { toast } from "react-toastify";
 
 const ResetPass = () => {
   const [searchParams] = useSearchParams();
@@ -15,7 +16,12 @@ const ResetPass = () => {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    await resetPass(values, setSubmitting, token);
+    if (values.newPassword !== values.confirmPassword) {
+      toast.error("Passwords do not match");
+    } else {
+      await resetPass(values, token);
+    }
+    setSubmitting(false);
   };
 
   useEffect(() => {

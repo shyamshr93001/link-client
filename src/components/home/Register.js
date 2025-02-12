@@ -15,7 +15,8 @@ function Register() {
   };
 
   const handleRegisterSubmit = async (values, { setSubmitting }) => {
-    await registerUser(values, setSubmitting);
+    await registerUser(values);
+    setSubmitting(false)
   };
 
   return (

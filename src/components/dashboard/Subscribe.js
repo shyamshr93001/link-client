@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToSubs, unsubTopic } from "../../utils/subscribeUtils";
+import {
+  addToSubs,
+  createFormData,
+  unSubTopic,
+} from "../../utils/subscribeUtils";
 
 const Subscribe = ({ topicObj }) => {
   const dispatch = useDispatch();
@@ -13,20 +17,22 @@ const Subscribe = ({ topicObj }) => {
   const [seriousness, setSeriousness] = useState("Casual");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const createFormData = () => ({
-    topic: topicObj.name,
-    user: userData.username,
-    seriousness: seriousness,
-  });
-
-  const handleSubscribe = async () => { 
-    const formData = createFormData();
+  const handleSubscribe = async () => {
+    const formData = createFormData(
+      topicObj.name,
+      userData.username,
+      seriousness
+    );
     await addToSubs(formData, dispatch);
   };
 
   const handleUnSubscribe = async () => {
-    const formData = createFormData();
-    await unsubTopic(formData, dispatch);
+    const formData = createFormData(
+      topicObj.name,
+      userData.username,
+      seriousness
+    );
+    await unSubTopic(formData, dispatch);
   };
 
   const getSubsUI = () => {

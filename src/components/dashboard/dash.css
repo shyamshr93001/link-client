@@ -1,10 +1,16 @@
-.topic-card{
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 15px 0;
+.topic-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 15px 0;
 }
 
-.topic-card *{
-    width: fit-content;
+.user-info-style div,
+.topic-card * {
+  width: fit-content;
+}
+
+.user-info-parent {
+  background-color: white;
+  border-radius: 10px;
 }

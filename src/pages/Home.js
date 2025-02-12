@@ -1,7 +1,7 @@
 import React from "react";
-import Login from "./Login";
-import Register from "./Register";
-import Header from "../common/Header";
+import Header from "../components/common/Header";
+import Login from "../components/home/Login";
+import Register from "../components/home/Register";
 
 const Home = () => {
 

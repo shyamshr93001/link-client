@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import Header from "../common/Header";
-import UserInfo from "./UserInfo";
-import Topic from "./Topic";
 import { Button, Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getData, createTopic } from "../../utils/topicUtils";
-import { getUser } from "../../utils/userUtils";
-import EditTopic from "./modals/EditTopic";
 import { useNavigate } from "react-router-dom";
-import { createTopicSchema } from "../../utils/schemas/topicSchemas";
-import { getSubsData } from "../../utils/subscribeUtils";
+import { ToastContainer } from "react-toastify";
+import { createTopic, getData } from "../utils/topicUtils";
+import { getUser } from "../utils/userUtils";
+import { getSubsData } from "../utils/subscribeUtils";
+import Header from "../components/common/Header";
+import UserInfo from "../components/dashboard/UserInfo";
+import Topic from "../components/dashboard/Topic";
+import EditTopic from "../components/dashboard/modals/EditTopic"
+import {createTopicSchema} from "../utils/schemas/topicSchemas"
 
-const Index = () => {
+const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -43,7 +44,9 @@ const Index = () => {
   const handleEditModalClose = () => setShowEditTopicModal(false);
 
   const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
-    await dispatch(createTopic(userData, values, setSubmitting, handleClose));
+    await dispatch(createTopic(userData, values));
+    setSubmitting(false);
+    handleClose();
   };
 
   const getTopicData = async () => {
@@ -58,11 +61,7 @@ const Index = () => {
       setPublicTopicData(publicTopics);
       setUserTopicData(privateTopics);
     } catch (err) {
-      Swal.fire({
-        title: err,
-        text: err?.response?.data,
-        icon: "error",
-      });
+      Swal.fire({ title: err, text: err?.response?.data, icon: "error" });
     }
   };
 
@@ -178,4 +177,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Dashboard;

@@ -3,14 +3,16 @@ import { Modal, Button } from "react-bootstrap";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { forgetPass } from "../../utils/userUtils";
 import { forgetPassSchema } from "../../utils/schemas/userSchemas";
+import { ToastContainer } from "react-toastify";
 
 const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
-  //change setsubmitting
+  
   const initialValues = {
     email: "",
   };
   const handleSubmit = async (values, { setSubmitting }) => {
-    await forgetPass(values, setSubmitting);
+    await forgetPass(values);
+    setSubmitting(false)
   };
 
   return (

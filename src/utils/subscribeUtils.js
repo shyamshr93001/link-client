@@ -1,6 +1,13 @@
 import Swal from "sweetalert2";
 import { getSubAction } from "../redux/actions/subActions";
 import { axiosInstance } from "./axiosUtils";
+import { toast } from "react-toastify";
+
+export const createFormData = (topicName, username, seriousness) => ({
+  topic: topicName,
+  user: username,
+  seriousness: seriousness,
+});
 
 export const getSubsData = () => async (dispatch) => {
   try {
@@ -25,7 +32,7 @@ export const addToSubs = async (formData, dispatch) => {
       if (result.isConfirmed) {
         const res = await axiosInstance.post("/subscribe", formData);
         dispatch(getSubsData());
-        Swal.fire("Subscribed!", "", "success");
+        toast.success("Subscribed")
       }
     } catch (err) {
       Swal.fire({
@@ -36,24 +43,25 @@ export const addToSubs = async (formData, dispatch) => {
   });
 };
 
-export const unsubTopic = async (formData, dispatch) => {
-    Swal.fire({
-      title: "Remove from Subscription",
-      icon: "error",
-      showCancelButton: true,
-      confirmButtonText: "Confirm",
-    }).then(async (result) => {
-      try {
-        if (result.isConfirmed) {
-          const res = await axiosInstance.post("/unsubscribe", formData);
-          dispatch(getSubsData());
-          Swal.fire("Unsubscribed!", "", "success");
-        }
-      } catch (err) {
-        Swal.fire({
-          title: err.response?.data,
-          icon: "error",
-        });
+export const unSubTopic = async (formData, dispatch) => {
+  const {topic , user} = formData
+  Swal.fire({
+    title: "Remove from Subscription",
+    icon: "error",
+    showCancelButton: true,
+    confirmButtonText: "Confirm",
+  }).then(async (result) => {
+    try {
+      if (result.isConfirmed) {
+        const res = await axiosInstance.delete("/unsubscribe", {data: {topic, user}});
+        dispatch(getSubsData());
+        toast.success("Unsubscribed!")
       }
-    });
-  };
+    } catch (err) {
+      Swal.fire({
+        title: err.response?.data,
+        icon: "error",
+      });
+    }
+  });
+};

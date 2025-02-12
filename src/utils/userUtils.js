@@ -1,5 +1,4 @@
 import { getUserAction } from "../redux/actions/userActions";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { axiosInstance } from "./axiosUtils";
 
@@ -8,10 +7,7 @@ export const getUser =
   (dispatch) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user == null && navigate != null) {
-      Swal.fire({
-        title: "Not Logged in",
-        icon: "error",
-      });
+      Swal.fire({ title: "Not Logged in", icon: "error" });
       navigate("/");
       return;
     }
@@ -19,10 +15,10 @@ export const getUser =
     dispatch(getUserAction(user));
   };
 
-export const forgetPass = async (values, setSubmitting) => {
+export const forgetPass = async (values) => {
   try {
     await axiosInstance.post(
-      `${process.env.REACT_APP_SERVER_URL}/forgotPassword`,
+      `${process.env.REACT_APP_SERVER_URL}/forgetPass`,
       values
     );
     Swal.fire({
@@ -35,98 +31,53 @@ export const forgetPass = async (values, setSubmitting) => {
       text: err.response.data,
       icon: "error",
     });
-  } finally {
-    setSubmitting(false);
   }
 };
 
-export const loginUser = async (
-  values,
-  navigate,
-  setLoginFail,
-  setLoginFailMessage,
-  setSubmitting,
-  dispatch
-) => {
+export const loginUser = async (values, dispatch) => {
   try {
-    const user = await axiosInstance.post(
+    const res = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/loginUser`,
       values
     );
-    localStorage.setItem("user", JSON.stringify(user.data.data));
-    localStorage.setItem("token", JSON.stringify(user.data.token));
+    localStorage.setItem("user", JSON.stringify(res.data.data));
+    localStorage.setItem("token", JSON.stringify(res.data.token));
     dispatch(getUser());
-    navigate("/dashboard");
+    return { status: 200, message: "Success", data: res.data };
   } catch (err) {
-    if (err.response.status === 400) {
-      setLoginFail(true);
-      setLoginFailMessage(err.response.data);
-    } else {
-      Swal.fire({
-        title: "Login Error",
-        text: err.response.data,
-        icon: "error",
-      });
-    }
-  } finally {
-    setSubmitting(false);
+    console.log(err)
+    return err.response;
   }
 };
 
-export const registerUser = async (values, setSubmitting) => {
+export const registerUser = async (values) => {
   try {
     const user = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/createUser`,
       values
     );
-
-    if (user.data === "User Exists Already") {
-      Swal.fire({
-        title: "User Exists Already",
-        icon: "error",
-      });
-    } else {
-      Swal.fire({
-        title: "Registered Successfully",
-        text: "User is registered successfully",
-        icon: "success",
-      });
-    }
+    Swal.fire({ title: user.data, icon: "success" });
   } catch (err) {
     Swal.fire({
       title: "Registration Error",
       text: err.response.data,
       icon: "error",
     });
-  } finally {
-    setSubmitting(false);
   }
 };
 
-export const resetPass = async (values, setSubmitting, token) => {
-  if (values.newPassword !== values.confirmPassword) {
-    Swal.fire({
-      title: "Passwords do not match",
-      icon: "error",
-    });
-    return;
-  }
+export const resetPass = async (values, token) => {
   try {
     const response = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`,
       { newPassword: values.newPassword }
     );
-    Swal.fire({
-      title: "Password reset successful",
-      icon: "success",
-    });
+    Swal.fire({ title: "Password reset successful", icon: "success" });
   } catch (error) {
     Swal.fire({
       title: "Error resetting password",
       text: error.response?.data,
       icon: "error",
     });
-  } finally {
-    setSubmitting(false);
   }
 };
