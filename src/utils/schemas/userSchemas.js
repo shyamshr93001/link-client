@@ -10,8 +10,8 @@ export const registerSchema = Yup.object({
     .email("Invalid email format")
     .required("Email is required"),
   username: Yup.string().required("Username is required"),
-  firstname: Yup.string().required("First name is required"),
-  lastname: Yup.string().required("Last name is required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   password: Yup.string().required("Password is required"),
   con_password: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")

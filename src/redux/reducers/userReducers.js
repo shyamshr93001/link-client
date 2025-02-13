@@ -1,8 +1,8 @@
 import { GET_USER } from "../constants/userConstants";
 const initialState = {
   userData: {
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     username: '',
     email: ''
   },

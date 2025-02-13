@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from "react";
-import Header from "../common/Header";
-import UserInfo from "./UserInfo";
-import Topic from "./Topic";
 import { Button, Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { getData, createTopic } from "../../utils/topicUtils";
-import { getUser } from "../../utils/userUtils";
-import EditTopic from "./modals/EditTopic";
 import { useNavigate } from "react-router-dom";
-import { createTopicSchema } from "../../utils/schemas/topicSchemas";
-import { getSubsData } from "../../utils/subscribeUtils";
+import { createTopic, getData } from "../utils/topicUtils";
+import { getUser } from "../utils/userUtils";
+import { getSubsData } from "../utils/subscribeUtils";
+import Header from "../components/common/Header";
+import UserInfo from "../components/dashboard/UserInfo";
+import Topic from "../components/dashboard/Topic";
+import EditTopic from "../components/dashboard/modals/EditTopic";
+import { createTopicSchema } from "../utils/schemas/topicSchemas";
 
-const Index = () => {
+const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const topicReducer = useSelector((store) => store.topicReducer);
   const userReducer = useSelector((store) => store.user);
-  const subscriptionReducer = useSelector((store) => store.subscriptionReducer);
+  const subsReducer = useSelector((store) => store.subscriptionReducer);
 
+  const { subsData } = subsReducer;
   const { topicData } = topicReducer;
   const { userData } = userReducer;
-  const { subsData } = subscriptionReducer;
 
   const initialValues = {
     name: "",
     visibility: "public",
   };
 
-
   const [publicTopicData, setPublicTopicData] = useState([]);
   const [userTopicData, setUserTopicData] = useState([]);
+  const [subTopicData, setSubTopicData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditTopicModal, setShowEditTopicModal] = useState(false);
   const [topicObj, setTopicObj] = useState({});
@@ -47,8 +46,9 @@ const Index = () => {
   const handleEditModalClose = () => setShowEditTopicModal(false);
 
   const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
-    console.log("cluck me")
-    await dispatch(createTopic(userData, values, setSubmitting, handleClose));
+    await dispatch(createTopic(userData, values));
+    setSubmitting(false);
+    handleClose();
   };
 
   const getTopicData = async () => {
@@ -60,37 +60,36 @@ const Index = () => {
         (topic) => topic.createdBy === userData.username
       );
 
+      const subList = subsData.filter(
+        (sub) => sub.user.username === userData.username
+      );
+
+      const subTopics = subList.map((sub) => sub.topic).filter(sub => sub);
+
+      console.log("my subs", subTopics);
       setPublicTopicData(publicTopics);
       setUserTopicData(privateTopics);
+      setSubTopicData(subTopics);
     } catch (err) {
-      Swal.fire({
-        title: err,
-        text: err?.response?.data,
-        icon: "error",
-      });
+      Swal.fire({ title: err, text: err?.response?.data, icon: "error" });
     }
   };
 
   useEffect(() => {
     dispatch(getUser(navigate));
     dispatch(getData());
-    dispatch(getSubsData())
+    dispatch(getSubsData());
   }, [dispatch]);
 
   useEffect(() => {
     getTopicData();
-    console.log("new topic", topicData);
-  }, [topicData]);
-
-  useEffect(() => {
-    console.log("new subs", subsData);
-  }, [subsData]);
+  }, [topicData, subsData]);
 
   return (
     <>
       <div>
         <Header
-          title={userData.firstname + " " + userData.lastname}
+          title={userData.firstName + " " + userData.lastName}
           showTopicModal={handleShow}
           isLogin={true}
         />
@@ -103,6 +102,13 @@ const Index = () => {
               handleEditModalShow={handleEditModalShow}
               getTopicData={getTopicData}
               isUser={true}
+            />
+            <Topic
+              topicData={subTopicData}
+              topicHeading="Your Subs"
+              handleEditModalShow={handleEditModalShow}
+              isUser={false}
+              isUserSub={true}
             ></Topic>
           </div>
           <div className="col-8">
@@ -187,4 +193,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Dashboard;

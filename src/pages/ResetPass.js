@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { resetPass } from "../../utils/userUtils";
-import { resetPassSchema } from "../../utils/schemas/userSchemas";
+import { resetPass } from "../utils/userUtils";
+import { resetPassSchema } from "../utils/schemas/userSchemas";
+import { toast } from "react-toastify";
+import {
+  PASSWORD_INCORRECT,
+  PASSWORD_RESET_INVALID_TOKEN,
+} from "../redux/constants/userConstants";
 
 const ResetPass = () => {
   const [searchParams] = useSearchParams();
@@ -15,16 +20,17 @@ const ResetPass = () => {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    await resetPass(values, setSubmitting, token);
+    if (values.newPassword !== values.confirmPassword) {
+      toast.error(PASSWORD_INCORRECT);
+    } else {
+      await resetPass(values, token);
+    }
+    setSubmitting(false);
   };
 
   useEffect(() => {
     if (!token) {
-      Swal.fire({
-        title: "Invalid Token or Not found",
-        text: "Token is invalid",
-        icon: "error",
-      });
+      Swal.fire({ title: PASSWORD_RESET_INVALID_TOKEN, icon: "error" });
     }
   }, []);
 

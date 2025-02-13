@@ -5,11 +5,13 @@ import { forgetPass } from "../../utils/userUtils";
 import { forgetPassSchema } from "../../utils/schemas/userSchemas";
 
 const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
+  
   const initialValues = {
     email: "",
   };
   const handleSubmit = async (values, { setSubmitting }) => {
-    await forgetPass(values, setSubmitting);
+    await forgetPass(values);
+    setSubmitting(false)
   };
 
   return (
