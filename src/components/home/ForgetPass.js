@@ -3,7 +3,6 @@ import { Modal, Button } from "react-bootstrap";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { forgetPass } from "../../utils/userUtils";
 import { forgetPassSchema } from "../../utils/schemas/userSchemas";
-import { ToastContainer } from "react-toastify";
 
 const ForgetPass = ({ showForgetModal, handleForgetPassClose }) => {
   

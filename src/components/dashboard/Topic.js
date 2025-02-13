@@ -13,6 +13,7 @@ const Topic = ({
   topicData,
   isUser = false,
   handleEditModalShow,
+  isUserSub = false,
 }) => {
   const dispatch = useDispatch();
   const userReducer = useSelector((store) => store.user);
@@ -60,7 +61,7 @@ const Topic = ({
                   </button>
                 )}
               </div>
-              {topic.createdBy !== userData.username && (
+              {(topic.createdBy !== userData.username && !isUserSub) && (
                 <Subscribe topicObj={topic} />
               )}
             </div>

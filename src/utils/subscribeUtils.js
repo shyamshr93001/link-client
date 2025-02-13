@@ -2,6 +2,7 @@ import Swal from "sweetalert2";
 import { getSubAction } from "../redux/actions/subActions";
 import { axiosInstance } from "./axiosUtils";
 import { toast } from "react-toastify";
+import { SUBSCRIBED_SUCCESS, UNSUBSCRIBED_SUCCESS } from "../redux/constants/subConstants";
 
 export const createFormData = (topicName, username, seriousness) => ({
   topic: topicName,
@@ -22,7 +23,7 @@ export const getSubsData = () => async (dispatch) => {
 };
 
 export const addToSubs = async (formData, dispatch) => {
-  Swal.fire({
+  await Swal.fire({
     title: "Add to Subscription",
     icon: "info",
     showCancelButton: true,
@@ -32,7 +33,7 @@ export const addToSubs = async (formData, dispatch) => {
       if (result.isConfirmed) {
         const res = await axiosInstance.post("/subscribe", formData);
         dispatch(getSubsData());
-        toast.success("Subscribed")
+        toast.success(SUBSCRIBED_SUCCESS)
       }
     } catch (err) {
       Swal.fire({
@@ -45,7 +46,7 @@ export const addToSubs = async (formData, dispatch) => {
 
 export const unSubTopic = async (formData, dispatch) => {
   const {topic , user} = formData
-  Swal.fire({
+  await Swal.fire({
     title: "Remove from Subscription",
     icon: "error",
     showCancelButton: true,
@@ -55,7 +56,7 @@ export const unSubTopic = async (formData, dispatch) => {
       if (result.isConfirmed) {
         const res = await axiosInstance.delete("/unsubscribe", {data: {topic, user}});
         dispatch(getSubsData());
-        toast.success("Unsubscribed!")
+        toast.success(UNSUBSCRIBED_SUCCESS)
       }
     } catch (err) {
       Swal.fire({

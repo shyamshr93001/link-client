@@ -3,6 +3,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { useNavigate } from 'react-router-dom';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { toast } from 'react-toastify';
+import { LOGOUT_SUCCESS } from '../../redux/constants/userConstants';
 
 function Header(props) {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function Header(props) {
   const handleLogout = () => {
     localStorage.clear();
     navigate("/")
-    toast.success("Logout Successfully")
+    toast.success(LOGOUT_SUCCESS)
   }
   
   return (

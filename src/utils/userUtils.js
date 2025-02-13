@@ -1,6 +1,14 @@
 import { getUserAction } from "../redux/actions/userActions";
 import Swal from "sweetalert2";
 import { axiosInstance } from "./axiosUtils";
+import {
+  LOGIN_SUCCESS,
+  PASSWORD_RESET_FAIL,
+  PASSWORD_RESET_SENT,
+  PASSWORD_RESET_SENT_FAIL,
+  PASSWORD_RESET_SUCCESS,
+  REGISTERED_FAIL,
+} from "../redux/constants/userConstants";
 
 export const getUser =
   (navigate = null) =>
@@ -21,13 +29,10 @@ export const forgetPass = async (values) => {
       `${process.env.REACT_APP_SERVER_URL}/forgetPass`,
       values
     );
-    Swal.fire({
-      title: "Password reset email sent",
-      icon: "success",
-    });
+    Swal.fire({ title: PASSWORD_RESET_SENT, icon: "success" });
   } catch (err) {
     Swal.fire({
-      title: "Error sending email",
+      title: PASSWORD_RESET_SENT_FAIL,
       text: err.response.data,
       icon: "error",
     });
@@ -43,9 +48,9 @@ export const loginUser = async (values, dispatch) => {
     localStorage.setItem("user", JSON.stringify(res.data.data));
     localStorage.setItem("token", JSON.stringify(res.data.token));
     dispatch(getUser());
-    return { status: 200, message: "Success", data: res.data };
+    return { status: 200, message: LOGIN_SUCCESS, data: res.data };
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return err.response;
   }
 };
@@ -59,7 +64,7 @@ export const registerUser = async (values) => {
     Swal.fire({ title: user.data, icon: "success" });
   } catch (err) {
     Swal.fire({
-      title: "Registration Error",
+      title: REGISTERED_FAIL,
       text: err.response.data,
       icon: "error",
     });
@@ -72,10 +77,10 @@ export const resetPass = async (values, token) => {
       `${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`,
       { newPassword: values.newPassword }
     );
-    Swal.fire({ title: "Password reset successful", icon: "success" });
+    Swal.fire({ title: PASSWORD_RESET_SUCCESS, icon: "success" });
   } catch (error) {
     Swal.fire({
-      title: "Error resetting password",
+      title: PASSWORD_RESET_FAIL,
       text: error.response?.data,
       icon: "error",
     });

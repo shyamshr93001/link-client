@@ -4,15 +4,14 @@ import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { createTopic, getData } from "../utils/topicUtils";
 import { getUser } from "../utils/userUtils";
 import { getSubsData } from "../utils/subscribeUtils";
 import Header from "../components/common/Header";
 import UserInfo from "../components/dashboard/UserInfo";
 import Topic from "../components/dashboard/Topic";
-import EditTopic from "../components/dashboard/modals/EditTopic"
-import {createTopicSchema} from "../utils/schemas/topicSchemas"
+import EditTopic from "../components/dashboard/modals/EditTopic";
+import { createTopicSchema } from "../utils/schemas/topicSchemas";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -20,7 +19,9 @@ const Dashboard = () => {
 
   const topicReducer = useSelector((store) => store.topicReducer);
   const userReducer = useSelector((store) => store.user);
+  const subsReducer = useSelector((store) => store.subscriptionReducer);
 
+  const { subsData } = subsReducer;
   const { topicData } = topicReducer;
   const { userData } = userReducer;
 
@@ -31,6 +32,7 @@ const Dashboard = () => {
 
   const [publicTopicData, setPublicTopicData] = useState([]);
   const [userTopicData, setUserTopicData] = useState([]);
+  const [subTopicData, setSubTopicData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditTopicModal, setShowEditTopicModal] = useState(false);
   const [topicObj, setTopicObj] = useState({});
@@ -58,8 +60,16 @@ const Dashboard = () => {
         (topic) => topic.createdBy === userData.username
       );
 
+      const subList = subsData.filter(
+        (sub) => sub.user.username === userData.username
+      );
+
+      const subTopics = subList.map((sub) => sub.topic).filter(sub => sub);
+
+      console.log("my subs", subTopics);
       setPublicTopicData(publicTopics);
       setUserTopicData(privateTopics);
+      setSubTopicData(subTopics);
     } catch (err) {
       Swal.fire({ title: err, text: err?.response?.data, icon: "error" });
     }
@@ -73,8 +83,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     getTopicData();
-    console.log("new topic", topicData);
-  }, [topicData]);
+  }, [topicData, subsData]);
 
   return (
     <>
@@ -93,6 +102,13 @@ const Dashboard = () => {
               handleEditModalShow={handleEditModalShow}
               getTopicData={getTopicData}
               isUser={true}
+            />
+            <Topic
+              topicData={subTopicData}
+              topicHeading="Your Subs"
+              handleEditModalShow={handleEditModalShow}
+              isUser={false}
+              isUserSub={true}
             ></Topic>
           </div>
           <div className="col-8">

@@ -5,6 +5,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { resetPass } from "../utils/userUtils";
 import { resetPassSchema } from "../utils/schemas/userSchemas";
 import { toast } from "react-toastify";
+import {
+  PASSWORD_INCORRECT,
+  PASSWORD_RESET_INVALID_TOKEN,
+} from "../redux/constants/userConstants";
 
 const ResetPass = () => {
   const [searchParams] = useSearchParams();
@@ -17,7 +21,7 @@ const ResetPass = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     if (values.newPassword !== values.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(PASSWORD_INCORRECT);
     } else {
       await resetPass(values, token);
     }
@@ -26,11 +30,7 @@ const ResetPass = () => {
 
   useEffect(() => {
     if (!token) {
-      Swal.fire({
-        title: "Invalid Token or Not found",
-        text: "Token is invalid",
-        icon: "error",
-      });
+      Swal.fire({ title: PASSWORD_RESET_INVALID_TOKEN, icon: "error" });
     }
   }, []);
 

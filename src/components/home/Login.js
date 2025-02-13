@@ -6,6 +6,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { loginUser } from "../../utils/userUtils";
 import { useDispatch } from "react-redux";
 import { loginSchema } from "../../utils/schemas/userSchemas";
+import { toast } from "react-toastify";
+import { LOGIN_SUCCESS } from "../../redux/constants/userConstants";
 
 function Login() {
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ function Login() {
         break;
       case 200:
         navigate("/dashboard");
+        toast.success(res.data.message)
         break;
       default:
         break;

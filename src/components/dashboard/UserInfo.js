@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 
 const UserInfo = ({ userTopicData }) => {
-  //change inline function. move to top
+  
   const userReducer = useSelector((state) => state.user);
   const subsReducer = useSelector((state) => state.subscriptionReducer);
 

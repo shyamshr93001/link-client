@@ -33,12 +33,16 @@ const Subscribe = ({ topicObj }) => {
       seriousness
     );
     await unSubTopic(formData, dispatch);
+    getSubsUI();
   };
 
   const getSubsUI = () => {
+   
     setIsSubscribed(
       subsData.some(
-        (sub) => sub.user === userData.username && sub.topic === topicObj.name
+        (sub) =>
+          sub.user.username === userData.username &&
+          sub.topic.name === topicObj.name
       )
     );
   };
