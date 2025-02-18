@@ -7,7 +7,6 @@ import { loginUser } from "../../utils/userUtils";
 import { useDispatch } from "react-redux";
 import { loginSchema } from "../../utils/schemas/userSchemas";
 import { toast } from "react-toastify";
-import { LOGIN_SUCCESS } from "../../redux/constants/userConstants";
 
 function Login() {
   const navigate = useNavigate();
@@ -30,7 +29,6 @@ function Login() {
       case 400:
         setLoginFail(true);
         setLoginFailMessage(res.data);
-        
         break;
       case 200:
         navigate("/dashboard");
