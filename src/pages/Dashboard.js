@@ -60,7 +60,7 @@ const Dashboard = () => {
   const getTopicData = async () => {
     try {
       start()
-      const publicTopics = topicgit Data.filter(
+      const publicTopics = topicData.filter(
         (topic) => topic.visibility === "public"
       );
       const privateTopics = topicData.filter(
