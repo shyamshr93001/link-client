@@ -7,6 +7,8 @@ import { loginUser } from "../../utils/userUtils";
 import { useDispatch } from "react-redux";
 import { loginSchema } from "../../utils/schemas/userSchemas";
 import { toast } from "react-toastify";
+import { useLoadingBar } from "react-top-loading-bar";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ function Login() {
   const [showForgetModal, setForgetModal] = useState(false);
   const [loginFail, setLoginFail] = useState(false);
   const [loginFailMessage, setLoginFailMessage] = useState("");
+  const { start, complete } = useLoadingBar({ height: 2 });
 
   const initialValues = {
     emailOrUsername: "",
@@ -24,7 +27,9 @@ function Login() {
   const handleForgetPassShow = () => setForgetModal(true);
   const handleForgetPassClose = () => setForgetModal(false);
   const handleLoginSubmit = async (values, { setSubmitting }) => {
+    start();
     const res = await loginUser(values, navigate, dispatch);
+    complete();
     switch (res.status) {
       case 400:
         setLoginFail(true);

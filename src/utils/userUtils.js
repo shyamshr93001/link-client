@@ -10,6 +10,10 @@ import {
   REGISTERED_FAIL,
 } from "../redux/constants/userConstants";
 
+const handleError = (err, title) => {
+  Swal.fire({ title, text: err.response?.data, icon: "error" });
+};
+
 export const getUser =
   (navigate = null) =>
   (dispatch) => {
@@ -31,11 +35,7 @@ export const forgetPass = async (values) => {
     );
     Swal.fire({ title: PASSWORD_RESET_SENT, icon: "success" });
   } catch (err) {
-    Swal.fire({
-      title: PASSWORD_RESET_SENT_FAIL,
-      text: err.response.data,
-      icon: "error",
-    });
+    handleError(PASSWORD_RESET_SENT_FAIL);
   }
 };
 
@@ -63,11 +63,7 @@ export const registerUser = async (values) => {
     );
     Swal.fire({ title: user.data, icon: "success" });
   } catch (err) {
-    Swal.fire({
-      title: REGISTERED_FAIL,
-      text: err.response.data,
-      icon: "error",
-    });
+    handleError(REGISTERED_FAIL);
   }
 };
 
@@ -79,10 +75,6 @@ export const resetPass = async (values, token) => {
     );
     Swal.fire({ title: PASSWORD_RESET_SUCCESS, icon: "success" });
   } catch (error) {
-    Swal.fire({
-      title: PASSWORD_RESET_FAIL,
-      text: error.response?.data,
-      icon: "error",
-    });
+    handleError(PASSWORD_RESET_FAIL)
   }
 };
