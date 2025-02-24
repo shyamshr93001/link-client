@@ -14,6 +14,7 @@ const UserInfo = ({ userTopicData }) => {
   const subCount = subsData.filter(
     (sub) => sub.user === userData.username
   ).length;
+  
   const userNameMail = () => {
     return `${userData?.firstName} ${userData?.lastName} (${userData?.username})`;
   };

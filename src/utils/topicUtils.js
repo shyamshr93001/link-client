@@ -2,14 +2,19 @@ import Swal from "sweetalert2";
 import { addTopic, getTopic } from "../redux/actions/topicActions";
 import { axiosInstance } from "./axiosUtils";
 import { toast } from "react-toastify";
-import { TOPIC_CREATED_SUCCESS, TOPIC_DELETED_SUCCESS, TOPIC_UPDATED_SUCCESS } from "../redux/constants/topicConstants";
+import {
+  TOPIC_CREATED_SUCCESS,
+  TOPIC_DELETED_SUCCESS,
+  TOPIC_UPDATED_SUCCESS,
+} from "../redux/constants/topicConstants";
+import { handleError, handleSuccess } from "./commonUtils";
 
 export const getData = () => async (dispatch) => {
   try {
     const data = await axiosInstance.get("/getTopics");
     dispatch(getTopic(data.data));
   } catch (err) {
-    Swal.fire({ title: err.response?.data, icon: "error" });
+    handleError(err);
   }
 };
 
@@ -21,9 +26,9 @@ export const createTopic = (userData, values) => async (dispatch) => {
       values
     );
     dispatch(addTopic(newTopic.data));
-    toast.success(TOPIC_CREATED_SUCCESS);
+    handleSuccess(TOPIC_CREATED_SUCCESS);
   } catch (err) {
-    Swal.fire({ title: err.response?.data, icon: "error" });
+    handleError(err);
   }
 };
 
@@ -35,9 +40,9 @@ export const updateTopic = async (values, dispatch) => {
       values
     );
     dispatch(getData());
-    toast.success(TOPIC_UPDATED_SUCCESS);
+    handleSuccess(TOPIC_UPDATED_SUCCESS);
   } catch (err) {
-    Swal.fire({ title: err.response?.data, icon: "error" });
+    handleError(err);
   }
 };
 
@@ -48,8 +53,8 @@ export const deleteTopic = async (name, dispatch) => {
       { data: { name } }
     );
     dispatch(getData());
-    toast.success(TOPIC_DELETED_SUCCESS);
+    handleSuccess(TOPIC_DELETED_SUCCESS);
   } catch (err) {
-    Swal.fire({ title: err.response.data, icon: "error" });
+    handleError(err);
   }
 };

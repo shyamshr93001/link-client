@@ -12,6 +12,8 @@ import UserInfo from "../components/dashboard/UserInfo";
 import Topic from "../components/dashboard/Topic";
 import EditTopic from "../components/dashboard/modals/EditTopic";
 import { createTopicSchema } from "../utils/schemas/topicSchemas";
+import { useLoadingBar } from "react-top-loading-bar";
+
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -37,6 +39,8 @@ const Dashboard = () => {
   const [showEditTopicModal, setShowEditTopicModal] = useState(false);
   const [topicObj, setTopicObj] = useState({});
 
+  const { start, complete } = useLoadingBar({ height: 2 });
+
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const handleEditModalShow = (topic) => {
@@ -46,14 +50,17 @@ const Dashboard = () => {
   const handleEditModalClose = () => setShowEditTopicModal(false);
 
   const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
+
     await dispatch(createTopic(userData, values));
     setSubmitting(false);
     handleClose();
+
   };
 
   const getTopicData = async () => {
     try {
-      const publicTopics = topicData.filter(
+      start()
+      const publicTopics = topicgit Data.filter(
         (topic) => topic.visibility === "public"
       );
       const privateTopics = topicData.filter(
@@ -72,6 +79,9 @@ const Dashboard = () => {
       setSubTopicData(subTopics);
     } catch (err) {
       Swal.fire({ title: err, text: err?.response?.data, icon: "error" });
+    }
+    finally{
+      complete()
     }
   };
 

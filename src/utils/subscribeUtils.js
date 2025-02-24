@@ -1,8 +1,11 @@
 import Swal from "sweetalert2";
 import { getSubAction } from "../redux/actions/subActions";
 import { axiosInstance } from "./axiosUtils";
-import { toast } from "react-toastify";
-import { SUBSCRIBED_SUCCESS, UNSUBSCRIBED_SUCCESS } from "../redux/constants/subConstants";
+import {
+  SUBSCRIBED_SUCCESS,
+  UNSUBSCRIBED_SUCCESS,
+} from "../redux/constants/subConstants";
+import { handleError, handleSuccess } from "./commonUtils";
 
 export const createFormData = (topicName, username, seriousness) => ({
   topic: topicName,
@@ -15,10 +18,7 @@ export const getSubsData = () => async (dispatch) => {
     const res = await axiosInstance.get("/getSubscribers");
     dispatch(getSubAction(res.data));
   } catch (err) {
-    Swal.fire({
-      title: err.response?.data,
-      icon: "error",
-    });
+    handleError(err)
   }
 };
 
@@ -33,19 +33,16 @@ export const addToSubs = async (formData, dispatch) => {
       if (result.isConfirmed) {
         const res = await axiosInstance.post("/subscribe", formData);
         dispatch(getSubsData());
-        toast.success(SUBSCRIBED_SUCCESS)
+        handleSuccess(SUBSCRIBED_SUCCESS);
       }
     } catch (err) {
-      Swal.fire({
-        title: err.response?.data,
-        icon: "error",
-      });
+      handleError(err)
     }
   });
 };
 
 export const unSubTopic = async (formData, dispatch) => {
-  const {topic , user} = formData
+  const { topic, user } = formData;
   await Swal.fire({
     title: "Remove from Subscription",
     icon: "error",
@@ -54,15 +51,14 @@ export const unSubTopic = async (formData, dispatch) => {
   }).then(async (result) => {
     try {
       if (result.isConfirmed) {
-        const res = await axiosInstance.delete("/unsubscribe", {data: {topic, user}});
+        const res = await axiosInstance.delete("/unsubscribe", {
+          data: { topic, user },
+        });
         dispatch(getSubsData());
-        toast.success(UNSUBSCRIBED_SUCCESS)
+        handleSuccess(UNSUBSCRIBED_SUCCESS);
       }
     } catch (err) {
-      Swal.fire({
-        title: err.response?.data,
-        icon: "error",
-      });
+      handleError(err)
     }
   });
 };

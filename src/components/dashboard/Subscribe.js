@@ -17,27 +17,22 @@ const Subscribe = ({ topicObj }) => {
   const [seriousness, setSeriousness] = useState("Casual");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
+  const formData = createFormData(
+    topicObj.name,
+    userData.username,
+    seriousness
+  );
+  
   const handleSubscribe = async () => {
-    const formData = createFormData(
-      topicObj.name,
-      userData.username,
-      seriousness
-    );
     await addToSubs(formData, dispatch);
   };
 
   const handleUnSubscribe = async () => {
-    const formData = createFormData(
-      topicObj.name,
-      userData.username,
-      seriousness
-    );
     await unSubTopic(formData, dispatch);
     getSubsUI();
   };
 
   const getSubsUI = () => {
-   
     setIsSubscribed(
       subsData.some(
         (sub) =>
