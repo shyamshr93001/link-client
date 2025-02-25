@@ -1,7 +1,5 @@
-import Swal from "sweetalert2";
 import { addTopic, getTopic } from "../redux/actions/topicActions";
 import { axiosInstance } from "./axiosUtils";
-import { toast } from "react-toastify";
 import {
   TOPIC_CREATED_SUCCESS,
   TOPIC_DELETED_SUCCESS,
@@ -35,7 +33,7 @@ export const createTopic = (userData, values) => async (dispatch) => {
 export const updateTopic = async (values, dispatch) => {
   try {
     console.log("val", values);
-    const topic = await axiosInstance.put(
+    await axiosInstance.put(
       `${process.env.REACT_APP_SERVER_URL}/updateTopic`,
       values
     );
@@ -48,7 +46,7 @@ export const updateTopic = async (values, dispatch) => {
 
 export const deleteTopic = async (name, dispatch) => {
   try {
-    const topic = await axiosInstance.delete(
+    await axiosInstance.delete(
       `${process.env.REACT_APP_SERVER_URL}/deleteTopic`,
       { data: { name } }
     );

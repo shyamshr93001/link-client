@@ -86,13 +86,21 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    document.title = "Dashboard"
+  }, [])
+  
+
+  useEffect(() => {
     dispatch(getUser(navigate));
     dispatch(getData());
     dispatch(getSubsData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {
     getTopicData();
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicData, subsData]);
 
   return (

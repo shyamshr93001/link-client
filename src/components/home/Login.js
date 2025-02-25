@@ -85,9 +85,9 @@ function Login() {
                 />
               </div>
               <div className="row mt-2">
-                <a href="#" className="col" onClick={handleForgetPassShow}>
+                <button className="col btn btn-link" onClick={handleForgetPassShow}>
                   Forget Password
-                </a>
+                </button>
                 <button
                   type="submit"
                   className="btn btn-primary col-auto px-5"

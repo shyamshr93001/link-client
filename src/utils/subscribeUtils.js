@@ -31,7 +31,7 @@ export const addToSubs = async (formData, dispatch) => {
   }).then(async (result) => {
     try {
       if (result.isConfirmed) {
-        const res = await axiosInstance.post("/subscribe", formData);
+        await axiosInstance.post("/subscribe", formData);
         dispatch(getSubsData());
         handleSuccess(SUBSCRIBED_SUCCESS);
       }
@@ -51,7 +51,7 @@ export const unSubTopic = async (formData, dispatch) => {
   }).then(async (result) => {
     try {
       if (result.isConfirmed) {
-        const res = await axiosInstance.delete("/unsubscribe", {
+        await axiosInstance.delete("/unsubscribe", {
           data: { topic, user },
         });
         dispatch(getSubsData());

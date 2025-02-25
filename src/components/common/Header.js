@@ -1,6 +1,6 @@
 import React from 'react'
 import Dropdown from 'react-bootstrap/Dropdown';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { toast } from 'react-toastify';
 import { LOGOUT_SUCCESS } from '../../redux/constants/userConstants';
@@ -17,9 +17,9 @@ function Header(props) {
   return (
     <div>
       <nav className="navbar navbar-light bg-light justify-content-between px-2">
-        <a href="/" className="navbar-brand">
+        <Link to="/" className="navbar-brand">
           Link Sharing App
-        </a>
+        </Link>
         <form className="form-inline">
           <input
             className="form-control mr-sm-2"

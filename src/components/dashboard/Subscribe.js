@@ -43,7 +43,8 @@ const Subscribe = ({ topicObj }) => {
   };
 
   useEffect(() => {
-    getSubsUI();
+    getSubsUI();    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subsData]);
 
   return (
