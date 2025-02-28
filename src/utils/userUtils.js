@@ -23,7 +23,6 @@ export const getUser =
       navigate("/");
       return;
     }
-    console.log("Logged in:", user);
     dispatch(getUserAction(user));
   };
 
@@ -69,7 +68,7 @@ export const registerUser = async (values) => {
 
 export const resetPass = async (values, token) => {
   try {
-    const response = await axiosInstance.post(
+    await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/resetPassword/${token}`,
       { newPassword: values.newPassword }
     );

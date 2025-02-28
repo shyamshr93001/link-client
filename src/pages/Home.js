@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../components/common/Header";
 import Login from "../components/home/Login";
 import Register from "../components/home/Register";
 
 const Home = () => {
+  useEffect(() => {
+    document.title = "Home";
+  }, []);
 
   return (
     <div>

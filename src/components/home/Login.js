@@ -17,6 +17,7 @@ function Login() {
   const [showForgetModal, setForgetModal] = useState(false);
   const [loginFail, setLoginFail] = useState(false);
   const [loginFailMessage, setLoginFailMessage] = useState("");
+  
   const { start, complete } = useLoadingBar({ height: 2 });
 
   const initialValues = {
@@ -85,9 +86,9 @@ function Login() {
                 />
               </div>
               <div className="row mt-2">
-                <a href="#" className="col" onClick={handleForgetPassShow}>
+                <button className="col btn btn-link" onClick={handleForgetPassShow}>
                   Forget Password
-                </a>
+                </button>
                 <button
                   type="submit"
                   className="btn btn-primary col-auto px-5"

@@ -8,12 +8,9 @@ import {
 
 const Subscribe = ({ topicObj }) => {
   const dispatch = useDispatch();
-  const subsReducer = useSelector((store) => store.subscriptionReducer);
-  const userReducer = useSelector((store) => store.user);
-
-  const { subsData } = subsReducer;
-  const { userData } = userReducer;
-
+  const { subsData } = useSelector((store) => store.subscriptionReducer);
+  const { userData } = useSelector((store) => store.user);
+  
   const [seriousness, setSeriousness] = useState("Casual");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -22,7 +19,7 @@ const Subscribe = ({ topicObj }) => {
     userData.username,
     seriousness
   );
-  
+
   const handleSubscribe = async () => {
     await addToSubs(formData, dispatch);
   };
@@ -44,10 +41,11 @@ const Subscribe = ({ topicObj }) => {
 
   useEffect(() => {
     getSubsUI();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subsData]);
 
   return (
-    <div>
+    <div className="mt-3">
       <label>
         <select
           className="form-select"

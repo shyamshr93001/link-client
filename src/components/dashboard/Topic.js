@@ -16,9 +16,7 @@ const Topic = ({
   isUserSub = false,
 }) => {
   const dispatch = useDispatch();
-  const userReducer = useSelector((store) => store.user);
-
-  const { userData } = userReducer;
+  const { userData } = useSelector((store) => store.user);
 
   const [show, setShow] = useState(false);
   const [topicName, setTopicName] = useState("");
@@ -36,13 +34,15 @@ const Topic = ({
           {topicData.toReversed().map((topic, index) => (
             <div key={index} className="topic-card">
               <h4>{topic.name}</h4>
-              {!isUser && <p>Created by: {topic.createdBy}</p>}
-              {isUser && <p>Visibility: {topic.visibility}</p>}
+              {!isUser && (
+                <div className="my-2">Created by: {topic.createdBy}</div>
+              )}
+              {isUser && <div>Visibility: {topic.visibility}</div>}
               <div className="d-flex align-items-baseline">
-                <p>
+                <div>
                   Date Created:{" "}
                   {moment(topic.dateCreated).format("DD/MM/YY, h:mm:ss a")}
-                </p>
+                </div>
 
                 {isUser && (
                   <button
@@ -61,7 +61,7 @@ const Topic = ({
                   </button>
                 )}
               </div>
-              {(topic.createdBy !== userData.username && !isUserSub) && (
+              {topic.createdBy !== userData.username && !isUserSub && (
                 <Subscribe topicObj={topic} />
               )}
             </div>

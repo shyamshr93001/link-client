@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { resetPass } from "../utils/userUtils";
@@ -32,11 +32,12 @@ const ResetPass = () => {
     if (!token) {
       Swal.fire({ title: PASSWORD_RESET_INVALID_TOKEN, icon: "error" });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="container">
-      <a href="/">Home</a>
+      <Link to="/">Home</Link>
       <div className="mt-2">
         <h2>Reset Password</h2>
         <Formik
