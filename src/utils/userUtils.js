@@ -23,7 +23,6 @@ export const getUser =
       navigate("/");
       return;
     }
-    console.log("Logged in:", user);
     dispatch(getUserAction(user));
   };
 

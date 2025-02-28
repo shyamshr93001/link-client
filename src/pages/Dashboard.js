@@ -13,19 +13,18 @@ import Topic from "../components/dashboard/Topic";
 import EditTopic from "../components/dashboard/modals/EditTopic";
 import { createTopicSchema } from "../utils/schemas/topicSchemas";
 import { useLoadingBar } from "react-top-loading-bar";
-
+import AddResourceModal from "../components/dashboard/modals/AddResource";
+import { getResourceData } from "../utils/resourceUtils";
+import Resource from "../components/dashboard/Resource";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const topicReducer = useSelector((store) => store.topicReducer);
-  const userReducer = useSelector((store) => store.user);
-  const subsReducer = useSelector((store) => store.subscriptionReducer);
-
-  const { subsData } = subsReducer;
-  const { topicData } = topicReducer;
-  const { userData } = userReducer;
+  const { topicData } = useSelector((store) => store.topicReducer);
+  const { userData } = useSelector((store) => store.user);
+  const { subsData } = useSelector((store) => store.subscriptionReducer);
+  const { resourceData } = useSelector((store) => store.resourceReducer);
 
   const initialValues = {
     name: "",
@@ -35,9 +34,13 @@ const Dashboard = () => {
   const [publicTopicData, setPublicTopicData] = useState([]);
   const [userTopicData, setUserTopicData] = useState([]);
   const [subTopicData, setSubTopicData] = useState([]);
+  const [userResourceData, setUserResourceData] = useState([]);
+
   const [showModal, setShowModal] = useState(false);
   const [showEditTopicModal, setShowEditTopicModal] = useState(false);
+  const [showResourceModal, setShowResourceModal] = useState(false);
   const [topicObj, setTopicObj] = useState({});
+  const [subList, setSubList] = useState([]);
 
   const { start, complete } = useLoadingBar({ height: 2 });
 
@@ -47,19 +50,21 @@ const Dashboard = () => {
     setTopicObj(topic);
     setShowEditTopicModal(true);
   };
+  const handleResourceShow = () => {
+    setShowResourceModal(true);
+  };
   const handleEditModalClose = () => setShowEditTopicModal(false);
+  const handleResourceClose = () => setShowResourceModal(false);
 
   const handleCreateTopicSubmit = async (values, { setSubmitting }) => {
-
     await dispatch(createTopic(userData, values));
     setSubmitting(false);
     handleClose();
-
   };
 
   const getTopicData = async () => {
     try {
-      start()
+      start();
       const publicTopics = topicData.filter(
         (topic) => topic.visibility === "public"
       );
@@ -71,35 +76,49 @@ const Dashboard = () => {
         (sub) => sub.user.username === userData.username
       );
 
-      const subTopics = subList.map((sub) => sub.topic).filter(sub => sub);
-
-      console.log("my subs", subTopics);
+      const subTopics = subList.map((sub) => sub.topic).filter((sub) => sub);
+      const privateAndSubList = [...subTopics, ...privateTopics];
       setPublicTopicData(publicTopics);
       setUserTopicData(privateTopics);
       setSubTopicData(subTopics);
+      setSubList(privateAndSubList);
     } catch (err) {
       Swal.fire({ title: err, text: err?.response?.data, icon: "error" });
-    }
-    finally{
-      complete()
+    } finally {
+      complete();
     }
   };
 
+  const getUserResourceData = () => {
+    try {
+      const _userResourceData = resourceData.filter(
+        (resource) => resource.createdBy === userData.username
+      );
+      setUserResourceData(_userResourceData);
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    document.title = "Dashboard"
-  }, [])
-  
+    getUserResourceData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resourceData]);
+
+  useEffect(() => {
+    document.title = "Dashboard";
+  }, []);
 
   useEffect(() => {
     dispatch(getUser(navigate));
     dispatch(getData());
     dispatch(getSubsData());
+    dispatch(getResourceData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {
     getTopicData();
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicData, subsData]);
 
@@ -109,31 +128,35 @@ const Dashboard = () => {
         <Header
           title={userData.firstName + " " + userData.lastName}
           showTopicModal={handleShow}
+          showResourceModal={handleResourceShow}
           isLogin={true}
         />
-        <div className="row mx-2">
-          <div className="col-4">
-            <UserInfo userTopicData={userTopicData}></UserInfo>
-            <Topic
-              topicData={userTopicData}
-              topicHeading="Your Topics"
-              handleEditModalShow={handleEditModalShow}
-              getTopicData={getTopicData}
-              isUser={true}
-            />
-            <Topic
-              topicData={subTopicData}
-              topicHeading="Your Subs"
-              handleEditModalShow={handleEditModalShow}
-              isUser={false}
-              isUserSub={true}
-            ></Topic>
-          </div>
-          <div className="col-8">
-            <Topic
-              topicData={publicTopicData}
-              topicHeading="Public Topics"
-            ></Topic>
+        <div className="container p-0">
+          <div className="row">
+            <div className="col-4">
+              <UserInfo userTopicData={userTopicData}></UserInfo>
+              <Topic
+                topicData={userTopicData}
+                topicHeading="Your Topics"
+                handleEditModalShow={handleEditModalShow}
+                getTopicData={getTopicData}
+                isUser={true}
+              />
+              <Topic
+                topicData={subTopicData}
+                topicHeading="Your Subs"
+                handleEditModalShow={handleEditModalShow}
+                isUser={false}
+                isUserSub={true}
+              ></Topic>
+            </div>
+            <div className="col-8">
+              <Resource userResourceData={userResourceData} />
+              <Topic
+                topicData={publicTopicData}
+                topicHeading="Public Topics"
+              ></Topic>
+            </div>
           </div>
         </div>
       </div>
@@ -180,7 +203,7 @@ const Dashboard = () => {
                     className="text-danger"
                   />
                 </div>
-                <div className="row mt-2">
+                <div className="row mt-2 me-1 justify-content-end">
                   <Button
                     variant="secondary"
                     onClick={handleClose}
@@ -192,7 +215,7 @@ const Dashboard = () => {
                     type="submit"
                     variant="primary"
                     disabled={isSubmitting}
-                    className="col-auto"
+                    className="col-auto ms-2"
                   >
                     Save Changes
                   </Button>
@@ -207,6 +230,11 @@ const Dashboard = () => {
         handleEditModalClose={handleEditModalClose}
         topicObj={topicObj}
       ></EditTopic>
+      <AddResourceModal
+        showResourceModal={showResourceModal}
+        userSubList={subList}
+        handleResourceClose={handleResourceClose}
+      />
     </>
   );
 };

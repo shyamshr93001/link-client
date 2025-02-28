@@ -4,17 +4,13 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 
 const UserInfo = ({ userTopicData }) => {
-  
-  const userReducer = useSelector((state) => state.user);
-  const subsReducer = useSelector((state) => state.subscriptionReducer);
-
-  const { subsData } = subsReducer;
-  const { userData } = userReducer;
+  const { userData } = useSelector((state) => state.user);
+  const { subsData } = useSelector((state) => state.subscriptionReducer);
 
   const subCount = subsData.filter(
-    (sub) => sub.user === userData.username
+    (sub) => sub.user.username === userData.username
   ).length;
-  
+
   const userNameMail = () => {
     return `${userData?.firstName} ${userData?.lastName} (${userData?.username})`;
   };
@@ -32,7 +28,7 @@ const UserInfo = ({ userTopicData }) => {
 
             <div>{userData?.email}</div>
             <div>
-              {moment(userData?.dateCreated).format('MMM Do YYYY, h:mm:ss a')}
+              {moment(userData?.dateCreated).format("MMM Do YYYY, h:mm:ss a")}
             </div>
             <div>Topics : {userTopicData.length}</div>
             <div>Subscriptions: {subCount}</div>

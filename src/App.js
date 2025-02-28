@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import ResetPass from "./pages/ResetPass";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import Post from "./pages/Post";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/post" element={<Post />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/reset-password" element={<ResetPass />} />
           </Routes>
         </div>

@@ -17,6 +17,7 @@ function Login() {
   const [showForgetModal, setForgetModal] = useState(false);
   const [loginFail, setLoginFail] = useState(false);
   const [loginFailMessage, setLoginFailMessage] = useState("");
+  
   const { start, complete } = useLoadingBar({ height: 2 });
 
   const initialValues = {
