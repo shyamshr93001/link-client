@@ -9,6 +9,7 @@ import {
   PASSWORD_INCORRECT,
   PASSWORD_RESET_INVALID_TOKEN,
 } from "../redux/constants/userConstants";
+import { createAxiosInstance } from "../utils/axiosUtils";
 
 const ResetPass = () => {
   const [searchParams] = useSearchParams();
@@ -32,6 +33,8 @@ const ResetPass = () => {
     if (!token) {
       Swal.fire({ title: PASSWORD_RESET_INVALID_TOKEN, icon: "error" });
     }
+    document.title = "Reset Password";
+    createAxiosInstance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

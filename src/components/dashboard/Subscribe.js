@@ -10,7 +10,7 @@ const Subscribe = ({ topicObj }) => {
   const dispatch = useDispatch();
   const { subsData } = useSelector((store) => store.subscriptionReducer);
   const { userData } = useSelector((store) => store.user);
-  
+
   const [seriousness, setSeriousness] = useState("Casual");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -45,27 +45,34 @@ const Subscribe = ({ topicObj }) => {
   }, [subsData]);
 
   return (
-    <div className="mt-3">
-      <label>
-        <select
-          className="form-select"
-          value={seriousness}
-          onChange={(e) => setSeriousness(e.target.value)}
-        >
-          <option value="Casual">Casual</option>
-          <option value="Serious">Serious</option>
-          <option value="Very Serious">Very Serious</option>
-        </select>
-      </label>
+    <div className="mt-2 w-100">
       {!isSubscribed && (
-        <button className="btn btn-primary" onClick={handleSubscribe}>
-          Subscribe
-        </button>
+        
+        <div className="d-flex w-100 justify-content-between">
+          <label>
+            <select
+              className="form-select"
+              value={seriousness}
+              onChange={(e) => setSeriousness(e.target.value)}
+            >
+              <option value="Casual">Casual</option>
+              <option value="Serious">Serious</option>
+              <option value="Very Serious">Very Serious</option>
+            </select>
+          </label>
+
+          <button className="btn btn-primary" onClick={handleSubscribe}>
+            Subscribe
+          </button>
+        </div>
       )}
       {isSubscribed && (
-        <button className="btn btn-danger" onClick={handleUnSubscribe}>
+        <div>
+          <div>Seriousness : {seriousness}</div>
+        <button className="btn btn-danger d-block mt-2" onClick={handleUnSubscribe}>
           Unsubscribe
         </button>
+        </div>
       )}
     </div>
   );

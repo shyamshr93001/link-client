@@ -6,6 +6,7 @@ import { getUser } from "../utils/userUtils";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import Topic from "../components/dashboard/Topic";
+import { createAxiosInstance } from "../utils/axiosUtils";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,11 @@ const Profile = () => {
       setUserTopicData(privateTopics);
     } catch (err) {}
   };
+
+  useEffect(() => {
+    document.title = "Edit Profile";
+    createAxiosInstance();
+  }, []);
 
   useEffect(() => {
     dispatch(getUser(navigate));
@@ -49,14 +55,14 @@ const Profile = () => {
       <div className="container p-0">
         <div className="row">
           <div className="col-4">
-            <UserInfo userTopicData={userTopicData}></UserInfo>
+            <UserInfo userTopicData={userTopicData} userData={userData}></UserInfo>
             <Topic
               topicData={userTopicData}
               topicHeading="Your Topics"
               getTopicData={getTopicData}
+              
               isUser={false}
             />
-            
           </div>
           <div className="col-8"></div>
         </div>

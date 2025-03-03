@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { loginSchema } from "../../utils/schemas/userSchemas";
 import { toast } from "react-toastify";
 import { useLoadingBar } from "react-top-loading-bar";
-
+import { LOGIN_FAIL } from "../../redux/constants/userConstants";
 
 function Login() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ function Login() {
   const [showForgetModal, setForgetModal] = useState(false);
   const [loginFail, setLoginFail] = useState(false);
   const [loginFailMessage, setLoginFailMessage] = useState("");
-  
+
   const { start, complete } = useLoadingBar({ height: 2 });
 
   const initialValues = {
@@ -32,13 +32,15 @@ function Login() {
     const res = await loginUser(values, navigate, dispatch);
     complete();
     switch (res.status) {
+      case 500:
       case 400:
         setLoginFail(true);
-        setLoginFailMessage(res.data);
+        setLoginFailMessage(typeof res.data === String ? res.data : LOGIN_FAIL);
         break;
       case 200:
         navigate("/dashboard");
-        toast.success(res.data.message)
+
+        toast.success(res.data.message);
         break;
       default:
         break;
@@ -86,7 +88,10 @@ function Login() {
                 />
               </div>
               <div className="row mt-2">
-                <button className="col btn btn-link" onClick={handleForgetPassShow}>
+                <button
+                  className="col btn btn-link"
+                  onClick={handleForgetPassShow}
+                >
                   Forget Password
                 </button>
                 <button

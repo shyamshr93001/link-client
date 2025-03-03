@@ -14,3 +14,11 @@
   background-color: white;
   border-radius: 10px;
 }
+/* 
+.edit-topic-action{
+  display: none;
+}
+
+.topic-card:hover .edit-topic-action{
+  display: block;
+} */

@@ -1,20 +1,19 @@
 import React from "react";
 import ProfileImg from "../../assets/images/profile.png";
-import { useSelector } from "react-redux";
 import moment from "moment";
 
-const UserInfo = ({ userTopicData }) => {
-  const { userData } = useSelector((state) => state.user);
-  const { subsData } = useSelector((state) => state.subscriptionReducer);
+const UserInfo = ({ userTopicData, userData, subsData }) => {
+  // const { userData } = useSelector((state) => state.user);
+  // const { subsData } = useSelector((state) => state.subscriptionReducer);
 
-  const subCount = subsData.filter(
+  const subCount = subsData?.filter(
     (sub) => sub.user.username === userData.username
   ).length;
 
   const userNameMail = () => {
     return `${userData?.firstName} ${userData?.lastName} (${userData?.username})`;
   };
-
+  
   return (
     <div className="my-2 p-2">
       <h2>User Info</h2>
@@ -30,8 +29,9 @@ const UserInfo = ({ userTopicData }) => {
             <div>
               {moment(userData?.dateCreated).format("MMM Do YYYY, h:mm:ss a")}
             </div>
-            <div>Topics : {userTopicData.length}</div>
-            <div>Subscriptions: {subCount}</div>
+            {userTopicData &&
+            <div>Topics : {userTopicData?.length}</div>}
+            {subCount && <div>Subscriptions: {subCount}</div>}
           </div>
         </div>
       </div>

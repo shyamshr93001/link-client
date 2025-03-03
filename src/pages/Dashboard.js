@@ -16,6 +16,7 @@ import { useLoadingBar } from "react-top-loading-bar";
 import AddResourceModal from "../components/dashboard/modals/AddResource";
 import { getResourceData } from "../utils/resourceUtils";
 import Resource from "../components/dashboard/Resource";
+import { createAxiosInstance } from "../utils/axiosUtils";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ const Dashboard = () => {
     handleClose();
   };
 
+
   const getTopicData = async () => {
     try {
       start();
@@ -106,6 +108,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     document.title = "Dashboard";
+    createAxiosInstance();
   }, []);
 
   useEffect(() => {
@@ -131,10 +134,10 @@ const Dashboard = () => {
           showResourceModal={handleResourceShow}
           isLogin={true}
         />
-        <div className="container p-0">
+        <div className="container p-md-0">
           <div className="row">
-            <div className="col-4">
-              <UserInfo userTopicData={userTopicData}></UserInfo>
+            <div className="col-md-4 p-md-0">
+              <UserInfo userTopicData={userTopicData} userData={userData} subsData={subsData}></UserInfo>
               <Topic
                 topicData={userTopicData}
                 topicHeading="Your Topics"
@@ -150,7 +153,7 @@ const Dashboard = () => {
                 isUserSub={true}
               ></Topic>
             </div>
-            <div className="col-8">
+            <div className="col-md-8">
               <Resource userResourceData={userResourceData} />
               <Topic
                 topicData={publicTopicData}

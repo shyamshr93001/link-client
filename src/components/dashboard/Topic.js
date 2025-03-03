@@ -38,27 +38,26 @@ const Topic = ({
                 <div className="my-2">Created by: {topic.createdBy}</div>
               )}
               {isUser && <div>Visibility: {topic.visibility}</div>}
-              <div className="d-flex align-items-baseline">
-                <div>
+              <div className="d-flex w-100 align-items-baseline text-left justify-content-between">
+                <div className="text-left">
                   Date Created:{" "}
-                  {moment(topic.dateCreated).format("DD/MM/YY, h:mm:ss a")}
+                  {moment(topic.dateCreated).format("DD/MM/YY, h:mm a")}
                 </div>
-
                 {isUser && (
-                  <button
-                    className="btn btn-primary mx-2"
-                    onClick={(e) => handleEditModalShow(topic)}
-                  >
-                    <i className="bi bi-pen"></i>
-                  </button>
-                )}
-                {isUser && (
-                  <button
-                    className="btn btn-danger"
-                    onClick={(e) => handleShow(topic.name)}
-                  >
-                    <i className="bi bi-trash3"></i>
-                  </button>
+                  <div className="edit-topic-action">
+                    <button
+                      className="btn btn-primary mx-2"
+                      onClick={(e) => handleEditModalShow(topic)}
+                    >
+                      <i className="bi bi-pen"></i>
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={(e) => handleShow(topic.name)}
+                    >
+                      <i className="bi bi-trash3"></i>
+                    </button>
+                  </div>
                 )}
               </div>
               {topic.createdBy !== userData.username && !isUserSub && (

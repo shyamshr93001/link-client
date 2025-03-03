@@ -38,18 +38,30 @@ export const forgetPass = async (values) => {
   }
 };
 
+
+export const getOtherUser = async (username) => {
+  try {
+    const res = await axiosInstance.get(
+      `${process.env.REACT_APP_SERVER_URL}/getOtherUser/${username}`,
+    );
+    return res.data;
+  }
+  catch (err) {
+    handleError(err);
+  }
+}
+
 export const loginUser = async (values, dispatch) => {
   try {
     const res = await axiosInstance.post(
       `${process.env.REACT_APP_SERVER_URL}/loginUser`,
       values
     );
-    localStorage.setItem("user", JSON.stringify(res.data.data));
-    localStorage.setItem("token", JSON.stringify(res.data.token));
+     localStorage.setItem("user", JSON.stringify(res.data.data));
+     localStorage.setItem("token", JSON.stringify(res.data.token));
     dispatch(getUser());
     return { status: 200, message: LOGIN_SUCCESS, data: res.data };
   } catch (err) {
-    console.log(err);
     return err.response;
   }
 };
@@ -77,3 +89,5 @@ export const resetPass = async (values, token) => {
     handleError(PASSWORD_RESET_FAIL)
   }
 };
+
+

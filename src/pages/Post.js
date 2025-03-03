@@ -5,8 +5,10 @@ import Resource from "../components/dashboard/Resource";
 import { getResourceData } from "../utils/resourceUtils";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../utils/userUtils";
+import { createAxiosInstance } from "../utils/axiosUtils";
 
 const Post = () => {
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((store) => store.user);
@@ -40,6 +42,7 @@ const Post = () => {
 
   useEffect(() => {
     document.title = "Post";
+    createAxiosInstance();
   }, []);
 
   useEffect(() => {

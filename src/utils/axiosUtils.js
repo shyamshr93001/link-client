@@ -1,8 +1,14 @@
 import axios from "axios";
 
-export const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_URL,
-  headers: {
-    Authorization: JSON.parse(localStorage.getItem("token")),
-  },
-});
+export let axiosInstance = null;
+
+export function createAxiosInstance() {
+  const token = JSON.parse(localStorage.getItem("token"));
+
+  axiosInstance = axios.create({
+    baseURL: process.env.REACT_APP_SERVER_URL,
+    headers: {
+      Authorization: token,
+    },
+  });
+}
